@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google - InsideHire</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="company.css">
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="logo"><i class="fa-solid fa-chart-line logo-icon"></i><span class="logo-text">InsideHire</span></div>
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-item active"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="library.html" class="nav-item"><i class="fa-solid fa-book-open"></i><span>Library</span></a>
+            <a href="profile.html" class="nav-item"><i class="fa-regular fa-user"></i><span>Profile</span></a>
+            <a href="post.html" class="nav-item"><i class="fa-solid fa-layer-group"></i><span>Stories</span></a>
+            <a href="messages.html" class="nav-item"><i class="fa-solid fa-message"></i><span>Messages</span></a>
+            <a href="following.html" class="nav-item"><i class="fa-solid fa-users"></i><span>Following</span></a>
+        </nav>
+        <div class="sidebar-footer"><a href="#" class="nav-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a></div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search posts, companies, roles...">
+            </div>
+            <div class="top-actions">
+                <button class="theme-toggle" id="themeToggleBtn"><i class="fa-regular fa-moon"></i></button>
+                <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Write</button>
+                <div class="user-avatar"><img src="https://i.pravatar.cc/150?img=68" alt="User Avatar"></div>
+            </div>
+        </header>
+
+        <div class="company-layout">
+            <div class="company-main">
+                <!-- Company Hero -->
+                <div class="company-hero-card">
+                    <div class="company-hero-bg"></div>
+                    <div class="company-hero-body">
+                        <div class="company-logo-large">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+                        </div>
+                        <div class="company-hero-info">
+                            <h1 class="company-hero-name">Google</h1>
+                            <p class="company-hero-desc">Technology &middot; Mountain View, CA &middot; 100,000+ employees</p>
+                            <div class="company-hero-stats">
+                                <div class="hero-stat"><span class="hero-stat-num">1.2k</span><span class="hero-stat-label">Posts</span></div>
+                                <div class="hero-stat-div"></div>
+                                <div class="hero-stat"><span class="hero-stat-num">68%</span><span class="hero-stat-label">Selection Rate</span></div>
+                                <div class="hero-stat-div"></div>
+                                <div class="hero-stat"><span class="hero-stat-num">4.3</span><span class="hero-stat-label">Avg Difficulty</span></div>
+                            </div>
+                        </div>
+                        <button class="follow-company-btn"><i class="fa-solid fa-bell"></i> Follow</button>
+                    </div>
+                </div>
+
+                <!-- Company Stats Bar -->
+                <div class="company-stats-bar">
+                    <div class="company-stat-item">
+                        <i class="fa-solid fa-circle-check" style="color:#10B981"></i>
+                        <div><span class="cstat-num">820</span><span class="cstat-label">Selected</span></div>
+                    </div>
+                    <div class="company-stat-item">
+                        <i class="fa-solid fa-circle-xmark" style="color:#EF4444"></i>
+                        <div><span class="cstat-num">380</span><span class="cstat-label">Not Selected</span></div>
+                    </div>
+                    <div class="company-stat-item">
+                        <i class="fa-solid fa-code" style="color:var(--primary-color)"></i>
+                        <div><span class="cstat-num">DSA + SD</span><span class="cstat-label">Common Rounds</span></div>
+                    </div>
+                    <div class="company-stat-item">
+                        <i class="fa-solid fa-star" style="color:#F59E0B"></i>
+                        <div><span class="cstat-num">4.5 / 5</span><span class="cstat-label">Candidate Rating</span></div>
+                    </div>
+                </div>
+
+                <!-- Posts Filter -->
+                <div class="company-posts-header">
+                    <h2>Interview Experiences</h2>
+                    <div class="company-post-filters">
+                        <button class="lib-filter-btn active">All Roles</button>
+                        <button class="lib-filter-btn">SDE</button>
+                        <button class="lib-filter-btn">Intern</button>
+                        <button class="lib-filter-btn">Research</button>
+                        <button class="lib-filter-btn">PM</button>
+                    </div>
+                </div>
+
+                <!-- Posts -->
+                <div class="company-posts-list">
+                    <article class="post-card" onclick="window.location='post.html'" style="cursor:pointer">
+                        <div class="post-content">
+                            <div class="post-meta">
+                                <img src="https://i.pravatar.cc/150?img=32" alt="Author" class="author-avatar">
+                                <span class="author-name">Alex Chen</span><span class="meta-dot">&middot;</span><span class="post-date">Dec 15</span>
+                                <span class="meta-dot">&middot;</span><span style="color:#10B981;font-size:0.8rem;font-weight:600"><i class="fa-solid fa-circle-check"></i> Selected</span>
+                            </div>
+                            <h3 class="post-title">Aced My Google SDE Interview: A Detailed Guide</h3>
+                            <p class="post-preview">An in-depth breakdown of the coding rounds, system design, and behavioral questions...</p>
+                            <div class="post-footer">
+                                <div class="tags"><span class="tag">#SDE</span><span class="tag">#InterviewPrep</span></div>
+                                <div class="post-actions"><button class="action-btn"><i class="fa-regular fa-bookmark"></i></button></div>
+                            </div>
+                        </div>
+                        <div class="post-company-logo">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+                        </div>
+                    </article>
+
+                    <article class="post-card">
+                        <div class="post-content">
+                            <div class="post-meta">
+                                <img src="https://i.pravatar.cc/150?img=60" alt="Author" class="author-avatar">
+                                <span class="author-name">Priya Nair</span><span class="meta-dot">&middot;</span><span class="post-date">Nov 25</span>
+                                <span class="meta-dot">&middot;</span><span style="color:#EF4444;font-size:0.8rem;font-weight:600"><i class="fa-solid fa-circle-xmark"></i> Not Selected</span>
+                            </div>
+                            <h3 class="post-title">My Google L4 Interview Experience: What Went Wrong</h3>
+                            <p class="post-preview">A candid breakdown of where I stumbled in the Google L4 loop and the lessons I learned...</p>
+                            <div class="post-footer">
+                                <div class="tags"><span class="tag">#SWE</span><span class="tag">#Honest</span></div>
+                                <div class="post-actions"><button class="action-btn"><i class="fa-regular fa-bookmark"></i></button></div>
+                            </div>
+                        </div>
+                        <div class="post-company-logo">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <aside class="company-sidebar">
+                <div class="company-sidebar-widget">
+                    <h4 class="widget-title">Common Interview Rounds</h4>
+                    <ul class="interview-rounds-list">
+                        <li><i class="fa-solid fa-laptop-code"></i> Online Assessment</li>
+                        <li><i class="fa-solid fa-phone"></i> Phone Screen (45 min)</li>
+                        <li><i class="fa-solid fa-code"></i> Technical Round x3</li>
+                        <li><i class="fa-solid fa-diagram-project"></i> System Design</li>
+                        <li><i class="fa-solid fa-handshake"></i> Googlyness / Culture</li>
+                    </ul>
+                </div>
+                <div class="company-sidebar-widget">
+                    <h4 class="widget-title">Top Topics</h4>
+                    <div class="topic-cloud">
+                        <span class="tag">Graphs</span><span class="tag">DP</span><span class="tag">Trees</span><span class="tag">Sliding Window</span><span class="tag">Heaps</span><span class="tag">System Design</span><span class="tag">STAR Method</span>
+                    </div>
+                </div>
+                <div class="company-sidebar-widget">
+                    <h4 class="widget-title">Similar Companies</h4>
+                    <div class="similar-companies">
+                        <a href="#" class="similar-company-link">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" class="similar-logo">
+                            <span>Microsoft</span>
+                        </a>
+                        <a href="#" class="similar-company-link">
+                            <i class="fa-brands fa-amazon similar-logo-icon"></i>
+                            <span>Amazon</span>
+                        </a>
+                        <a href="#" class="similar-company-link">
+                            <i class="fa-brands fa-meta similar-logo-icon" style="color:#0082fb;"></i>
+                            <span>Meta</span>
+                        </a>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+</div>
+
+<script>
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = themeToggleBtn.querySelector('i');
+    const savedTheme = localStorage.getItem('insideHireTheme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) { document.body.classList.add('dark-theme'); themeIcon.classList.replace('fa-moon', 'fa-sun'); }
+    themeToggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-theme');
+        const isDark = document.body.classList.contains('dark-theme');
+        themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+        localStorage.setItem('insideHireTheme', isDark ? 'dark' : 'light');
+    });
+    document.querySelectorAll('.lib-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => { document.querySelectorAll('.lib-filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); });
+    });
+    const followBtn = document.querySelector('.follow-company-btn');
+    let following = false;
+    followBtn.addEventListener('click', () => {
+        following = !following;
+        followBtn.innerHTML = following ? '<i class="fa-solid fa-bell-slash"></i> Unfollow' : '<i class="fa-solid fa-bell"></i> Follow';
+        followBtn.classList.toggle('following-active', following);
+    });
+</script>
+</body>
+</html>

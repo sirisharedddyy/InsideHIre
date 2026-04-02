@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post - InsideHire</title>
+    <!-- Google Fonts: Inter & Merriweather -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="post.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-chart-line logo-icon"></i>
+                <span class="logo-text">InsideHire</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Library</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-regular fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="#" class="nav-item active">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>Stories</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Following</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Navigation Bar -->
+            <header class="top-bar">
+                <div class="search-container">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search posts, companies, roles...">
+                </div>
+                <div class="top-actions">
+                    <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Dark Mode">
+                        <i class="fa-regular fa-moon"></i>
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i> Write
+                    </button>
+                    <div class="user-avatar">
+                        <img src="https://i.pravatar.cc/150?img=68" alt="User Avatar">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Post Content -->
+            <div class="post-layout">
+                <article class="long-form-article">
+                    <div class="article-header">
+                        <div class="badge-selection">
+                            <i class="fa-solid fa-circle-check"></i> Selected
+                        </div>
+                        <h1 class="article-title">Aced My Google SDE Interview: A Detailed Guide and My 3-Month Prep Strategy</h1>
+                        
+                        <div class="author-info-section">
+                            <img src="https://i.pravatar.cc/150?img=32" alt="Author" class="author-avatar-large">
+                            <div class="author-details">
+                                <div class="author-name-row">
+                                    <span class="full-name">Alex Chen</span>
+                                    <span class="follow-btn">Follow</span>
+                                </div>
+                                <div class="author-meta">
+                                    <span class="branch">Computer Science</span>
+                                    <span class="meta-dot">&middot;</span>
+                                    <span class="batch">Class of 2026</span>
+                                    <span class="meta-dot">&middot;</span>
+                                    <span class="post-date">Dec 15</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="article-body">
+                        <p>The journey to landing an offer from Google was filled with rigorous preparation, countless LeetCode problems, and a deep dive into system design principles. Today, I want to share the exact roadmap that led me to success, breaking down each round of the interview process.</p>
+                        
+                        <h2>1. The Phone Screening</h2>
+                        <p>The first step was a 45-minute technical phone interview. The interviewer focused on a medium-level algorithmic question involving graphs and BFS (Breadth-First Search). The key here wasn't just solving the problem, but effectively communicating my thought process.</p>
+                        <blockquote>"Always talk through your approach before writing a single line of code. They are evaluating your problem-solving skills, not just your syntax."</blockquote>
+
+                        <h2>2. The Onsite Loop</h2>
+                        <p>The onsite loop consisted of four 45-minute interviews: three technical and one behavioral (Googlyness). The technical questions ranged from dynamic programming to challenging tree traversals. I found that recognizing patterns in the problems was crucial. For example, knowing when to apply a sliding window technique saved me valuable time.</p>
+                        
+                        <h2>3. Behavioral & Googlyness</h2>
+                        <p>Don't underestimate the behavioral round! Be prepared to discuss past conflicts, times you failed, and how you handled ambiguous situations. Use the STAR method (Situation, Task, Action, Result) to structure your answers clearly.</p>
+
+                        <p>If you're currently preparing, stay consistent. It's a marathon, not a sprint. Good luck to everyone out there grinding!</p>
+                    </div>
+
+                    <!-- Reaction Bar -->
+                    <div class="reaction-bar">
+                        <div class="reaction-group">
+                            <button class="reaction-btn">
+                                <i class="fa-regular fa-lightbulb"></i>
+                                <span class="reaction-count">124</span>
+                                <span class="reaction-label">Insightful</span>
+                            </button>
+                            <button class="reaction-btn">
+                                <i class="fa-solid fa-hands-clapping"></i>
+                                <span class="reaction-count">89</span>
+                                <span class="reaction-label">Congrats</span>
+                            </button>
+                            <button class="reaction-btn">
+                                <i class="fa-solid fa-handshake-angle"></i>
+                                <span class="reaction-count">45</span>
+                                <span class="reaction-label">Helpful</span>
+                            </button>
+                        </div>
+                        <div class="reaction-actions">
+                            <button class="action-icon-btn"><i class="fa-regular fa-comment"></i> 32</button>
+                            <button class="action-icon-btn"><i class="fa-regular fa-bookmark"></i></button>
+                            <button class="action-icon-btn"><i class="fa-solid fa-ellipsis"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="comments-section">
+                        <h3>Comments (32)</h3>
+                        <div class="comment-input-area">
+                            <img src="https://i.pravatar.cc/150?img=68" alt="Your Avatar" class="comment-avatar">
+                            <input type="text" placeholder="Add a comment or ask a question..." class="comment-input">
+                            <button class="btn btn-primary btn-sm">Post</button>
+                        </div>
+
+                        <!-- Parent Comment -->
+                        <div class="comment-thread">
+                            <div class="comment">
+                                <img src="https://i.pravatar.cc/150?img=12" alt="Commenter" class="comment-avatar">
+                                <div class="comment-content">
+                                    <div class="comment-header">
+                                        <span class="comment-author">Sarah Kim</span>
+                                        <span class="comment-time">2 hours ago</span>
+                                    </div>
+                                    <p class="comment-text">This is incredibly helpful! Did you find that standard LeetCode Mediums were enough for the onsite, or were there a lot of Hards?</p>
+                                    <div class="comment-actions">
+                                        <button class="comment-action-btn"><i class="fa-regular fa-thumbs-up"></i> 12</button>
+                                        <button class="comment-action-btn reply-btn">Reply</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Nested Reply -->
+                            <div class="comment nested-comment">
+                                <img src="https://i.pravatar.cc/150?img=32" alt="Author" class="comment-avatar">
+                                <div class="comment-content">
+                                    <div class="comment-header">
+                                        <span class="comment-author author-badge">Alex Chen</span>
+                                        <span class="comment-time">1 hour ago</span>
+                                    </div>
+                                    <p class="comment-text">Great question! Most were solid Mediums, but one of the onsite rounds definitely crossed into Hard territory (graph algorithms with tricky edge cases). Make sure you're comfortable with DP and Graphs.</p>
+                                    <div class="comment-actions">
+                                        <button class="comment-action-btn"><i class="fa-regular fa-thumbs-up"></i> 8</button>
+                                        <button class="comment-action-btn reply-btn">Reply</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Another Parent Comment -->
+                        <div class="comment-thread">
+                            <div class="comment">
+                                <img src="https://i.pravatar.cc/150?img=45" alt="Commenter" class="comment-avatar">
+                                <div class="comment-content">
+                                    <div class="comment-header">
+                                        <span class="comment-author">Michael Ross</span>
+                                        <span class="comment-time">5 hours ago</span>
+                                    </div>
+                                    <p class="comment-text">Congratulations on the offer! Could you share which resources you used for System Design?</p>
+                                    <div class="comment-actions">
+                                        <button class="comment-action-btn"><i class="fa-regular fa-thumbs-up"></i> 5</button>
+                                        <button class="comment-action-btn reply-btn">Reply</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </article>
+
+                <!-- Right Sidebar for Post -->
+                <aside class="post-sidebar">
+                    <button class="btn btn-secondary share-chat-btn">
+                        <i class="fa-solid fa-share"></i> Share to Chat
+                    </button>
+
+                    <div class="inbox-widget" id="inboxWidget">
+                        <div class="inbox-header">
+                            <div class="inbox-title-container">
+                                <i class="fa-solid fa-inbox inbox-icon-only"></i>
+                                <h4>Inbox</h4>
+                                <span class="unread-badge">2</span>
+                            </div>
+                            <button class="minimize-btn" id="toggleInboxBtn" aria-label="Minimize inbox">
+                                <i class="fa-solid fa-minus"></i>
+                            </button>
+                        </div>
+                        <div class="inbox-content" id="inboxContent">
+                            <div class="inbox-list">
+                            <div class="inbox-item unread">
+                                <img src="https://i.pravatar.cc/150?img=12" alt="Sender" class="inbox-avatar">
+                                <div class="inbox-info">
+                                    <div class="inbox-name-time">
+                                        <span class="inbox-name">Sarah Kim</span>
+                                        <span class="inbox-time">10m</span>
+                                    </div>
+                                    <p class="inbox-preview">Thanks for the referral advice...</p>
+                                </div>
+                            </div>
+                            <div class="inbox-item unread">
+                                <img src="https://i.pravatar.cc/150?img=25" alt="Sender" class="inbox-avatar">
+                                <div class="inbox-info">
+                                    <div class="inbox-name-time">
+                                        <span class="inbox-name">Recruiter</span>
+                                        <span class="inbox-time">1h</span>
+                                    </div>
+                                    <p class="inbox-preview">Hi, following up on your int...</p>
+                                </div>
+                            </div>
+                            <div class="inbox-item">
+                                <img src="https://i.pravatar.cc/150?img=44" alt="Sender" class="inbox-avatar">
+                                <div class="inbox-info">
+                                    <div class="inbox-name-time">
+                                        <span class="inbox-name">John Doe</span>
+                                        <span class="inbox-time">1d</span>
+                                    </div>
+                                    <p class="inbox-preview">Sounds good, let's connect s...</p>
+                                </div>
+                            </div>
+                            <a href="#" class="view-all-inbox">View all messages</a>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+            
+            <!-- Floating Ask for Referral Button -->
+            <button class="floating-referral-btn">
+                <i class="fa-solid fa-user-plus"></i> Ask for Referral
+            </button>
+
+        </main>
+    </div>
+
+    <!-- Dark Mode Toggle Script -->
+    <script>
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = themeToggleBtn.querySelector('i');
+        
+        // Check local storage for theme, or fallback to user system preference
+        const savedTheme = localStorage.getItem('insideHireTheme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            document.body.classList.add('dark-theme');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark-theme');
+            
+            if (isDark) {
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('insideHireTheme', 'dark');
+            } else {
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('insideHireTheme', 'light');
+            }
+        });
+
+        // Inbox Minimize/Maximize Logic
+        const inboxWidget = document.getElementById('inboxWidget');
+        const toggleInboxBtn = document.getElementById('toggleInboxBtn');
+
+        if (toggleInboxBtn && inboxWidget) {
+            toggleInboxBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent bubble up
+                inboxWidget.classList.add('minimized');
+            });
+
+            inboxWidget.addEventListener('click', () => {
+                if (inboxWidget.classList.contains('minimized')) {
+                    inboxWidget.classList.remove('minimized');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

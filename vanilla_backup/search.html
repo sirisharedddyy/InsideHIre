@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search: "Google" - InsideHire</title>
+    <meta name="description" content="Search interview experiences on InsideHire">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="search.css">
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-chart-line logo-icon"></i>
+            <span class="logo-text">InsideHire</span>
+        </div>
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="library.html" class="nav-item"><i class="fa-solid fa-book-open"></i><span>Library</span></a>
+            <a href="profile.html" class="nav-item"><i class="fa-regular fa-user"></i><span>Profile</span></a>
+            <a href="post.html" class="nav-item"><i class="fa-solid fa-layer-group"></i><span>Stories</span></a>
+            <a href="messages.html" class="nav-item"><i class="fa-solid fa-message"></i><span>Messages</span></a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-users"></i><span>Following</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="search-container search-active">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" class="search-input" id="searchInput" value="Google" placeholder="Search posts, companies, roles...">
+                <button class="search-clear-btn" id="clearBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="top-actions">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Dark Mode">
+                    <i class="fa-regular fa-moon"></i>
+                </button>
+                <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Write</button>
+                <div class="user-avatar">
+                    <img src="https://i.pravatar.cc/150?img=68" alt="User Avatar">
+                </div>
+            </div>
+        </header>
+
+        <div class="search-layout">
+            <div class="search-main">
+                <!-- Search meta row -->
+                <div class="search-meta">
+                    <p class="result-count"><span id="resultCount">12</span> results for <strong>"Google"</strong></p>
+                    <div class="sort-control">
+                        <label>Sort:</label>
+                        <select class="sort-select">
+                            <option>Most Relevant</option>
+                            <option>Newest First</option>
+                            <option>Most Reactions</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Filter Pills -->
+                <div class="search-filter-row">
+                    <button class="search-filter-pill active" data-type="all"><i class="fa-solid fa-layer-group"></i> All</button>
+                    <button class="search-filter-pill" data-type="posts"><i class="fa-solid fa-newspaper"></i> Posts</button>
+                    <button class="search-filter-pill" data-type="selected"><i class="fa-solid fa-circle-check"></i> Selected Only</button>
+                    <button class="search-filter-pill" data-type="people"><i class="fa-solid fa-users"></i> People</button>
+                    <button class="search-filter-pill" data-type="companies"><i class="fa-solid fa-building"></i> Companies</button>
+                </div>
+
+                <!-- Results Section: Posts -->
+                <div class="results-section" id="postsSection">
+                    <h2 class="results-section-title">Posts</h2>
+
+                    <article class="post-card" onclick="window.location='post.html'" style="cursor:pointer">
+                        <div class="post-content">
+                            <div class="post-meta">
+                                <img src="https://i.pravatar.cc/150?img=32" alt="Author" class="author-avatar">
+                                <span class="author-name">Alex Chen</span>
+                                <span class="meta-dot">&middot;</span>
+                                <span class="post-date">Dec 15</span>
+                                <span class="meta-dot">&middot;</span>
+                                <span class="selected-inline"><i class="fa-solid fa-circle-check"></i> Selected</span>
+                            </div>
+                            <h3 class="post-title">Aced My <mark>Google</mark> SDE Interview: A Detailed Guide</h3>
+                            <p class="post-preview">An in-depth breakdown of the coding rounds, system design, and behavioral questions that led to my offer at <mark>Google</mark>...</p>
+                            <div class="post-footer">
+                                <div class="tags"><span class="tag">#Google</span><span class="tag">#SDE</span></div>
+                                <div class="post-actions">
+                                    <button class="action-btn"><i class="fa-regular fa-bookmark"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="post-company-logo">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+                        </div>
+                    </article>
+
+                    <article class="post-card">
+                        <div class="post-content">
+                            <div class="post-meta">
+                                <img src="https://i.pravatar.cc/150?img=60" alt="Author" class="author-avatar">
+                                <span class="author-name">Priya Nair</span>
+                                <span class="meta-dot">&middot;</span>
+                                <span class="post-date">Nov 25</span>
+                                <span class="meta-dot">&middot;</span>
+                                <span class="not-selected-inline"><i class="fa-solid fa-circle-xmark"></i> Not Selected</span>
+                            </div>
+                            <h3 class="post-title">My <mark>Google</mark> L4 Interview Experience: What Went Wrong</h3>
+                            <p class="post-preview">A candid breakdown of where I stumbled in the <mark>Google</mark> L4 loop and the lessons I learned for next time...</p>
+                            <div class="post-footer">
+                                <div class="tags"><span class="tag">#Google</span><span class="tag">#Honest</span></div>
+                                <div class="post-actions">
+                                    <button class="action-btn"><i class="fa-regular fa-bookmark"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="post-company-logo">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+                        </div>
+                    </article>
+
+                    <article class="post-card">
+                        <div class="post-content">
+                            <div class="post-meta">
+                                <img src="https://i.pravatar.cc/150?img=44" alt="Author" class="author-avatar">
+                                <span class="author-name">John Doe</span>
+                                <span class="meta-dot">&middot;</span>
+                                <span class="post-date">Oct 05</span>
+                                <span class="meta-dot">&middot;</span>
+                                <span class="selected-inline"><i class="fa-solid fa-circle-check"></i> Selected</span>
+                            </div>
+                            <h3 class="post-title"><mark>Google</mark> SWE Intern: A Step-by-Step Experience Breakdown</h3>
+                            <p class="post-preview">A thorough account of the <mark>Google</mark> SWE Internship interview, from the OA to the final offer call...</p>
+                            <div class="post-footer">
+                                <div class="tags"><span class="tag">#Google</span><span class="tag">#Intern</span><span class="tag">#SWE</span></div>
+                                <div class="post-actions">
+                                    <button class="action-btn"><i class="fa-regular fa-bookmark"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="post-company-logo">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Results Section: People -->
+                <div class="results-section" id="peopleSection">
+                    <h2 class="results-section-title">People who interviewed at Google</h2>
+                    <div class="people-results-grid">
+                        <div class="person-card">
+                            <img src="https://i.pravatar.cc/150?img=32" class="person-avatar" alt="Alex Chen">
+                            <div class="person-info">
+                                <span class="person-name">Alex Chen</span>
+                                <span class="person-desc">CS &apos;26 &middot; Google SDE</span>
+                                <span class="person-badge selected-pill-sm"><i class="fa-solid fa-check"></i> Selected</span>
+                            </div>
+                            <button class="btn-follow-sm">Follow</button>
+                        </div>
+                        <div class="person-card">
+                            <img src="https://i.pravatar.cc/150?img=60" class="person-avatar" alt="Priya Nair">
+                            <div class="person-info">
+                                <span class="person-name">Priya Nair</span>
+                                <span class="person-desc">CS &apos;25 &middot; Google L4</span>
+                                <span class="person-badge not-selected-pill-sm"><i class="fa-solid fa-xmark"></i> Not Selected</span>
+                            </div>
+                            <button class="btn-follow-sm">Follow</button>
+                        </div>
+                        <div class="person-card">
+                            <img src="https://i.pravatar.cc/150?img=44" class="person-avatar" alt="John Doe">
+                            <div class="person-info">
+                                <span class="person-name">John Doe</span>
+                                <span class="person-desc">ECE &apos;26 &middot; Google Intern</span>
+                                <span class="person-badge selected-pill-sm"><i class="fa-solid fa-check"></i> Selected</span>
+                            </div>
+                            <button class="btn-follow-sm">Follow</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar: Refine Search -->
+            <aside class="search-sidebar">
+                <!-- Company Filter -->
+                <div class="search-widget">
+                    <h4 class="search-widget-title">Company</h4>
+                    <div class="filter-options">
+                        <label class="filter-check active-check"><input type="checkbox" checked> Google <span class="filter-count">12</span></label>
+                        <label class="filter-check"><input type="checkbox"> Amazon <span class="filter-count">8</span></label>
+                        <label class="filter-check"><input type="checkbox"> Microsoft <span class="filter-count">5</span></label>
+                        <label class="filter-check"><input type="checkbox"> Meta <span class="filter-count">3</span></label>
+                        <label class="filter-check"><input type="checkbox"> Apple <span class="filter-count">2</span></label>
+                    </div>
+                </div>
+                <!-- Role Filter -->
+                <div class="search-widget">
+                    <h4 class="search-widget-title">Role</h4>
+                    <div class="filter-options">
+                        <label class="filter-check active-check"><input type="checkbox" checked> SDE / SWE <span class="filter-count">9</span></label>
+                        <label class="filter-check"><input type="checkbox"> Intern <span class="filter-count">4</span></label>
+                        <label class="filter-check"><input type="checkbox"> Research Scientist <span class="filter-count">2</span></label>
+                        <label class="filter-check"><input type="checkbox"> PM <span class="filter-count">1</span></label>
+                    </div>
+                </div>
+                <!-- Outcome Filter -->
+                <div class="search-widget">
+                    <h4 class="search-widget-title">Outcome</h4>
+                    <div class="filter-options">
+                        <label class="filter-check"><input type="checkbox"> Selected Only</label>
+                        <label class="filter-check"><input type="checkbox"> Not Selected</label>
+                    </div>
+                </div>
+                <!-- Year Filter -->
+                <div class="search-widget">
+                    <h4 class="search-widget-title">Batch / Year</h4>
+                    <div class="filter-options">
+                        <label class="filter-check"><input type="checkbox"> 2026</label>
+                        <label class="filter-check"><input type="checkbox"> 2025</label>
+                        <label class="filter-check"><input type="checkbox"> 2024</label>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+</div>
+
+<script>
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = themeToggleBtn.querySelector('i');
+    const savedTheme = localStorage.getItem('insideHireTheme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+        document.body.classList.add('dark-theme');
+        themeIcon.classList.replace('fa-moon', 'fa-sun');
+    }
+    themeToggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-theme');
+        const isDark = document.body.classList.contains('dark-theme');
+        themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+        localStorage.setItem('insideHireTheme', isDark ? 'dark' : 'light');
+    });
+
+    // Filter pills
+    document.querySelectorAll('.search-filter-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            document.querySelectorAll('.search-filter-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+        });
+    });
+
+    // Clear search
+    document.getElementById('clearBtn').addEventListener('click', () => {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchInput').focus();
+    });
+</script>
+</body>
+</html>

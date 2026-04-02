@@ -1,0 +1,391 @@
+/* Write/Blog Creation Page Specific Styles */
+
+.write-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+}
+
+/* Header */
+.write-header {
+    height: 70px;
+    background-color: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    transition: background-color var(--transition-speed), border-color var(--transition-speed);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.go-back {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.go-back .logo-text {
+    color: var(--text-main);
+}
+
+.divider {
+    color: var(--border-color);
+    font-size: 1.5rem;
+    font-weight: 300;
+}
+
+.draft-status {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+/* Workspace Split */
+.write-workspace {
+    display: flex;
+    flex: 1;
+    overflow: hidden; /* prevents stretching past viewport if content is small */
+}
+
+/* Main Editor Area */
+.editor-main {
+    flex: 1;
+    overflow-y: auto;
+    background-color: var(--surface-color);
+    display: flex;
+    justify-content: center;
+    border-right: 1px solid var(--border-color);
+    transition: background-color var(--transition-speed);
+}
+
+.editor-container {
+    width: 100%;
+    max-width: 850px;
+    padding: 4rem 3rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-page-title {
+    font-family: 'Merriweather', serif; /* Elegant serif for standard blog feel */
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 2rem;
+    border: none;
+    outline: none;
+    background: transparent;
+}
+
+/* Metadata Ribbon */
+.metadata-ribbon {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.meta-input-group {
+    position: relative;
+    border-radius: 0.5rem;
+}
+
+/* The red outline requested by user */
+.meta-input-group.error-field {
+    border: 1px solid #EF4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+    background-color: rgba(239, 68, 68, 0.02);
+}
+
+.meta-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    outline: none;
+}
+
+.meta-input::placeholder {
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+/* Toolbar */
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tool-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+
+.tool-btn:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-main);
+}
+
+.tool-btn.active {
+    background-color: var(--hover-bg);
+    color: var(--primary-color);
+}
+
+.tool-divider {
+    width: 1px;
+    height: 20px;
+    background-color: var(--border-color);
+    margin: 0 0.5rem;
+}
+
+/* Editable content area */
+.main-content-area {
+    flex: 1;
+}
+
+.content-editable {
+    min-height: 400px;
+    font-family: 'Merriweather', serif; /* Classic Medium-style feel */
+    font-size: 1.25rem;
+    line-height: 1.8;
+    color: var(--text-main);
+    outline: none;
+}
+
+.content-editable[data-placeholder]:empty:before {
+    content: attr(data-placeholder);
+    color: var(--text-light);
+    cursor: text;
+    pointer-events: none; /* Let clicks pass through to empty div */
+}
+
+
+/* Sidebar Settings */
+.settings-sidebar {
+    width: 360px;
+    background-color: var(--bg-color); /* Slightly contrasted from editor */
+    padding: 2.5rem 2rem;
+    overflow-y: auto;
+    transition: background-color var(--transition-speed);
+}
+
+.sidebar-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 2rem;
+}
+
+.settings-group {
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.settings-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.setting-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.setting-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--text-muted);
+}
+
+.setting-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background-color: var(--surface-color);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+    appearance: auto; /* Allow native select arrows here to save complex CSS */
+}
+
+/* If it has an icon, pad the left */
+.setting-input-wrapper i.setting-icon + .setting-input {
+    padding-left: 2.75rem;
+}
+
+.pl-mock {
+    display: block;
+    cursor: pointer;
+}
+
+.calendar-trigger.active .setting-input {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+/* Mock Calendar Picker */
+.mock-calendar {
+    margin-top: 0.5rem;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: var(--shadow-md);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+}
+
+.calendar-header i {
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 0.25rem;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    gap: 0.25rem;
+}
+
+.day-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+}
+
+.day {
+    padding: 0.4rem 0;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.day.empty {
+    color: var(--text-light);
+    opacity: 0.5;
+}
+
+.day:hover:not(.empty) {
+    background-color: var(--hover-bg);
+}
+
+.day.active-day {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+
+.calendar-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    border-radius: 9999px;
+    cursor: pointer;
+}
+
+/* Toast Notification */
+.toast-notification {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background-color: rgba(31, 41, 55, 0.95); /* Dark grey semi-transparent */
+    color: #FFFFFF;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    font-size: 0.95rem;
+    font-weight: 500;
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    transform: translateY(150%);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+}
+
+.toast-notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.toast-notification i {
+    color: #F59E0B; /* Warning yellow accent icon */
+    font-size: 1.2rem;
+}
+
+/* Adjustments for pure Dark Theme so the Toast sticks out correctly */
+body.dark-theme .toast-notification {
+    background-color: rgba(75, 85, 99, 0.95); /* Slightly lighter grey for contrast in dark mode */
+}

@@ -1,0 +1,222 @@
+/* Onboarding specific styles building off styles.css variables */
+
+.onboarding-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    background-color: var(--bg-color);
+}
+
+.theme-toggle-wrapper {
+    position: absolute;
+    top: 2rem;
+    right: 3rem;
+    z-index: 100;
+}
+
+.onboarding-container {
+    width: 100%;
+    max-width: 1050px;
+    background-color: var(--surface-color);
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-dropdown);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    transition: all var(--transition-speed);
+}
+
+.onboarding-card {
+    display: flex;
+    flex-direction: row;
+    min-height: 600px;
+}
+
+/* Left Side: Illustration & Branding */
+.onboarding-left {
+    flex: 1;
+    background: linear-gradient(135deg, var(--hover-bg) 0%, var(--surface-color) 100%);
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    transition: background var(--transition-speed);
+}
+
+.onboarding-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 3rem;
+}
+
+.onboarding-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    line-height: 1.25;
+}
+
+.onboarding-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: auto; /* Push illustration to the bottom */
+}
+
+.illustration-container {
+    margin-top: 3rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.onboarding-illustration {
+    width: 100%;
+    max-width: 380px;
+    height: auto;
+}
+
+/* Right Side: Form Element */
+.onboarding-right {
+    flex: 1.1;
+    padding: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--surface-color);
+}
+
+.onboarding-form {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1.25rem;
+}
+
+.form-half {
+    flex: 1;
+}
+
+label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    transition: color var(--transition-speed);
+}
+
+.input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 1.25rem;
+    color: var(--text-light);
+    font-size: 1.1rem;
+    transition: color var(--transition-speed);
+}
+
+.select-arrow {
+    position: absolute;
+    right: 1.25rem;
+    color: var(--text-light);
+    pointer-events: none;
+    transition: color var(--transition-speed);
+}
+
+input, select {
+    width: 100%;
+    padding: 0.875rem 1rem 0.875rem 3rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text-main);
+    background-color: var(--bg-color); /* Slightly recessed look */
+    transition: all var(--transition-speed);
+    appearance: none;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: var(--surface-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Highlight icon on focus */
+input:focus ~ .input-icon, 
+select:focus ~ .input-icon {
+    color: var(--primary-color);
+}
+
+input::placeholder {
+    color: var(--text-light);
+}
+
+.btn-block {
+    width: 100%;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.btn-lg {
+    padding: 1rem 1.5rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 0.75rem;
+}
+
+/* Responsive Overrides */
+@media (max-width: 900px) {
+    .onboarding-card {
+        flex-direction: column;
+    }
+    .onboarding-left {
+        padding: 2.5rem;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .onboarding-title {
+        font-size: 1.85rem;
+    }
+    .onboarding-right {
+        padding: 2.5rem;
+    }
+    .theme-toggle-wrapper {
+        top: 1rem;
+        right: 1rem;
+    }
+    .onboarding-page {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 500px) {
+    .form-row {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+}

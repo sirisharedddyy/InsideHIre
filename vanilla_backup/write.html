@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write a Post - InsideHire</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="styles.css"> <!-- For base vars and dark mode -->
+    <link rel="stylesheet" href="write.css"> <!-- Specific to editor -->
+</head>
+<body class="write-page">
+
+    <!-- Top Navigation Ribbon -->
+    <header class="write-header">
+        <div class="header-left">
+            <a href="index.html" class="onboarding-brand go-back">
+                <i class="fa-solid fa-chart-line logo-icon"></i>
+                <span class="logo-text">InsideHire</span>
+            </a>
+            <span class="divider">/</span>
+            <span class="draft-status">Draft in progress</span>
+        </div>
+        <div class="header-right">
+            <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Dark Mode">
+                <i class="fa-regular fa-moon"></i>
+            </button>
+            <button class="btn" id="saveDraftBtn" style="background: transparent; color: var(--text-muted); padding-right: 0.5rem;">
+                Save as Draft
+            </button>
+            <button class="btn btn-primary" id="publishBtn">
+                Publish
+            </button>
+            <div class="user-avatar">
+                <img src="https://i.pravatar.cc/150?img=68" alt="User Avatar">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="write-workspace">
+        
+        <!-- Editor Area (Left) -->
+        <main class="editor-main">
+            <div class="editor-container">
+                
+                <h1 class="editor-page-title">New Post</h1>
+
+                <!-- Metadata Ribbon -->
+                <div class="metadata-ribbon">
+                    <div class="meta-input-group">
+                        <input type="text" placeholder="Post Title*" class="meta-input" required>
+                    </div>
+                    <div class="meta-input-group">
+                        <input type="text" placeholder="Company Name*" class="meta-input" required>
+                    </div>
+                    <div class="meta-input-group">
+                        <input type="text" placeholder="Role Name*" class="meta-input" required>
+                    </div>
+                </div>
+
+                <!-- Editor Toolbar -->
+                <div class="editor-toolbar">
+                    <button class="tool-btn active"><i class="fa-solid fa-bold"></i></button>
+                    <button class="tool-btn"><i class="fa-solid fa-italic"></i></button>
+                    <button class="tool-btn"><i class="fa-solid fa-underline"></i></button>
+                    <div class="tool-divider"></div>
+                    <button class="tool-btn"><i class="fa-solid fa-list-ul"></i></button>
+                    <button class="tool-btn"><i class="fa-solid fa-list-ol"></i></button>
+                    <div class="tool-divider"></div>
+                    <button class="tool-btn"><i class="fa-solid fa-link"></i></button>
+                    <button class="tool-btn"><i class="fa-regular fa-image"></i></button>
+                </div>
+
+                <!-- Main Content Editor -->
+                <div class="main-content-area">
+                    <div class="content-editable" contenteditable="true" data-placeholder="Start writing your behind-the-scenes perspective here..."></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Sidebar Settings (Right) -->
+        <aside class="settings-sidebar">
+            <h2 class="sidebar-title">Publish Settings</h2>
+            
+            <div class="settings-group">
+                <label>Visibility</label>
+                <div class="setting-input-wrapper">
+                    <i class="fa-regular fa-eye setting-icon"></i>
+                    <select class="setting-input">
+                        <option>Public</option>
+                        <option>Registered Users Only</option>
+                        <option>Private</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <label>Publish Timing</label>
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center;">
+                    <label style="text-transform: none; font-weight: normal; font-size: 0.95rem; cursor: pointer; color: var(--text-main); margin-bottom: 0;">
+                        <input type="radio" name="publishTiming" value="now" checked> Publish Now
+                    </label>
+                    <label style="text-transform: none; font-weight: normal; font-size: 0.95rem; cursor: pointer; color: var(--text-main); margin-bottom: 0;">
+                        <input type="radio" name="publishTiming" value="later" id="scheduleLaterRadio"> Schedule Later
+                    </label>
+                </div>
+                
+                <div id="calendarContainer" style="display: none;">
+                    <div class="setting-input-wrapper calendar-trigger active">
+                        <i class="fa-regular fa-clock setting-icon"></i>
+                        <span class="setting-input pl-mock">Sep 11, 2026</span>
+                    </div>
+                    
+                    <!-- Mock active calendar picker -->
+                    <div class="mock-calendar">
+                        <div class="calendar-header">
+                            <i class="fa-solid fa-chevron-left"></i>
+                            <span>September 2026</span>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </div>
+                        <div class="calendar-grid">
+                            <span class="day-name">Su</span><span class="day-name">Mo</span><span class="day-name">Tu</span><span class="day-name">We</span><span class="day-name">Th</span><span class="day-name">Fr</span><span class="day-name">Sa</span>
+                            <span class="day empty">29</span><span class="day empty">30</span><span class="day empty">31</span><span class="day">1</span><span class="day">2</span><span class="day">3</span><span class="day">4</span>
+                            <span class="day">5</span><span class="day">6</span><span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day">10</span><span class="day active-day">11</span>
+                            <span class="day">12</span><span class="day">13</span><span class="day">14</span><span class="day">15</span><span class="day">16</span><span class="day">17</span><span class="day">18</span>
+                            <span class="day">19</span><span class="day">20</span><span class="day">21</span><span class="day">22</span><span class="day">23</span><span class="day">24</span><span class="day">25</span>
+                        </div>
+                        <div class="calendar-footer">
+                            <button class="btn btn-sm btn-outline">Cancel</button>
+                            <button class="btn btn-sm btn-primary">Schedule</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <label>Tags</label>
+                <div class="setting-input-wrapper">
+                    <input type="text" class="setting-input" placeholder="e.g. #Amazon, #SDE">
+                </div>
+            </div>
+            
+            <div class="settings-group">
+                <label>Category</label>
+                <div class="setting-input-wrapper">
+                    <select class="setting-input">
+                        <option>Interview Experience</option>
+                        <option>Preparation Strategy</option>
+                        <option>Offer Negotiation</option>
+                    </select>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Toast Notification (Fixed bottom right) -->
+    <div class="toast-notification show">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>Please fill all required fields before publishing.</span>
+    </div>
+
+    <script>
+        // Dark Mode Script
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = themeToggleBtn.querySelector('i');
+        
+        const savedTheme = localStorage.getItem('insideHireTheme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            document.body.classList.add('dark-theme');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark-theme');
+            
+            if (isDark) {
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('insideHireTheme', 'dark');
+            } else {
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('insideHireTheme', 'light');
+            }
+        });
+
+        // Toast disappear logic for interaction demonstration
+        setTimeout(() => {
+            document.querySelector('.toast-notification').classList.remove('show');
+        }, 8000);
+        
+        // Re-trigger toast on publish click
+        document.getElementById('publishBtn').addEventListener('click', () => {
+            const toast = document.querySelector('.toast-notification');
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 4000);
+        });
+
+        // Calendar toggle logic
+        const publishNowRadio = document.querySelector('input[name="publishTiming"][value="now"]');
+        const scheduleLaterRadio = document.getElementById('scheduleLaterRadio');
+        const calendarContainer = document.getElementById('calendarContainer');
+
+        publishNowRadio.addEventListener('change', () => {
+            if (publishNowRadio.checked) calendarContainer.style.display = 'none';
+        });
+        scheduleLaterRadio.addEventListener('change', () => {
+            if (scheduleLaterRadio.checked) calendarContainer.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

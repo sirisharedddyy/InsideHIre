@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex Chen - InsideHire</title>
+    <meta name="description" content="Alex Chen's interview experiences and profile on InsideHire">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+<div class="app-container">
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-chart-line logo-icon"></i>
+            <span class="logo-text">InsideHire</span>
+        </div>
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-book-open"></i><span>Library</span></a>
+            <a href="#" class="nav-item active"><i class="fa-regular fa-user"></i><span>Profile</span></a>
+            <a href="post.html" class="nav-item"><i class="fa-solid fa-layer-group"></i><span>Stories</span></a>
+            <a href="messages.html" class="nav-item"><i class="fa-solid fa-message"></i><span>Messages</span></a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-users"></i><span>Following</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search posts, companies, roles...">
+            </div>
+            <div class="top-actions">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Dark Mode">
+                    <i class="fa-regular fa-moon"></i>
+                </button>
+                <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Write</button>
+                <div class="user-avatar">
+                    <img src="https://i.pravatar.cc/150?img=68" alt="User Avatar">
+                </div>
+            </div>
+        </header>
+
+        <div class="profile-layout">
+            <!-- Profile Main Column -->
+            <div class="profile-main">
+
+                <!-- Cover + Avatar -->
+                <div class="profile-card">
+                    <div class="profile-cover">
+                        <div class="cover-gradient"></div>
+                    </div>
+                    <div class="profile-identity">
+                        <div class="avatar-wrapper">
+                            <img src="https://i.pravatar.cc/150?img=32" alt="Alex Chen" class="profile-avatar">
+                            <span class="avatar-badge selected-badge" title="Selected Candidate">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </span>
+                        </div>
+                        <div class="profile-actions">
+                            <button class="btn btn-outline-primary" id="followBtn">
+                                <i class="fa-solid fa-user-plus"></i> Follow
+                            </button>
+                            <button class="btn btn-secondary-action" onclick="window.location='messages.html'">
+                                <i class="fa-solid fa-message"></i> Message
+                            </button>
+                            <button class="btn btn-secondary-action referral-profile-btn">
+                                <i class="fa-solid fa-user-check"></i> Ask Referral
+                            </button>
+                        </div>
+                    </div>
+                    <div class="profile-info">
+                        <h1 class="profile-name">
+                            Alex Chen
+                            <a href="https://linkedin.com/in/alexchen" target="_blank" class="profile-linkedin-icon" title="View LinkedIn Profile">
+                                <i class="fa-brands fa-linkedin"></i>
+                            </a>
+                        </h1>
+                        <p class="profile-headline">SDE @ Google &middot; CS &apos;26 &middot; IIT Bombay</p>
+                        <div class="profile-meta-row">
+                            <span class="profile-meta-item"><i class="fa-solid fa-graduation-cap"></i> Computer Science &middot; Class of 2026</span>
+                            <span class="profile-meta-item"><i class="fa-solid fa-location-dot"></i> Bangalore, India</span>
+                        </div>
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">5</span>
+                                <span class="stat-label">Posts</span>
+                            </div>
+                            <div class="stat-divider"></div>
+                            <div class="stat-item">
+                                <span class="stat-number">1.2k</span>
+                                <span class="stat-label">Followers</span>
+                            </div>
+                            <div class="stat-divider"></div>
+                            <div class="stat-item">
+                                <span class="stat-number">340</span>
+                                <span class="stat-label">Following</span>
+                            </div>
+                            <div class="stat-divider"></div>
+                            <div class="stat-item">
+                                <span class="stat-number">258</span>
+                                <span class="stat-label">Reactions</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selection History -->
+                <div class="profile-section-card">
+                    <h2 class="section-title"><i class="fa-solid fa-trophy"></i> Selection History</h2>
+                    <div class="selection-timeline">
+                        <div class="selection-item selected">
+                            <div class="selection-logo">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+                            </div>
+                            <div class="selection-details">
+                                <div class="selection-top">
+                                    <span class="company-name">Google</span>
+                                    <span class="selection-badge-pill selected-pill"><i class="fa-solid fa-check"></i> Selected</span>
+                                </div>
+                                <span class="role-name">Software Development Engineer</span>
+                                <span class="selection-date">December 2025</span>
+                            </div>
+                        </div>
+                        <div class="selection-item not-selected">
+                            <div class="selection-logo">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft">
+                            </div>
+                            <div class="selection-details">
+                                <div class="selection-top">
+                                    <span class="company-name">Microsoft</span>
+                                    <span class="selection-badge-pill not-selected-pill"><i class="fa-solid fa-xmark"></i> Not Selected</span>
+                                </div>
+                                <span class="role-name">SDE Intern</span>
+                                <span class="selection-date">October 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Posts Tab Section -->
+                <div class="profile-section-card">
+                    <div class="profile-tabs">
+                        <button class="profile-tab active" data-tab="posts">Posts</button>
+                        <button class="profile-tab" data-tab="saved">Saved</button>
+                        <button class="profile-tab" data-tab="about">About</button>
+                    </div>
+
+                    <!-- Posts Tab Content -->
+                    <div class="tab-content active" id="tab-posts">
+                        <article class="post-card" onclick="window.location='post.html'" style="cursor:pointer">
+                            <div class="post-content">
+                                <div class="post-meta">
+                                    <img src="https://i.pravatar.cc/150?img=32" alt="Author" class="author-avatar">
+                                    <span class="author-name">Alex Chen</span>
+                                    <span class="meta-dot">&middot;</span>
+                                    <span class="post-date">Dec 15</span>
+                                </div>
+                                <h3 class="post-title">Aced My Google SDE Interview: A Detailed Guide</h3>
+                                <p class="post-preview">An in-depth breakdown of the coding rounds, system design, and behavioral questions that led to my offer at Google...</p>
+                                <div class="post-footer">
+                                    <div class="tags">
+                                        <span class="tag">#Google</span>
+                                        <span class="tag">#SDE</span>
+                                        <span class="tag">#InterviewPrep</span>
+                                    </div>
+                                    <div class="post-actions">
+                                        <button class="action-btn"><i class="fa-regular fa-bookmark"></i></button>
+                                        <button class="action-btn"><i class="fa-solid fa-ellipsis"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="post-company-logo">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo">
+                            </div>
+                        </article>
+                    </div>
+
+                    <!-- Saved Tab Content -->
+                    <div class="tab-content" id="tab-saved">
+                        <div class="empty-state">
+                            <i class="fa-regular fa-bookmark"></i>
+                            <p>No saved posts visible to others.</p>
+                        </div>
+                    </div>
+
+                    <!-- About Tab Content -->
+                    <div class="tab-content" id="tab-about">
+                        <div class="about-section">
+                            <div class="about-row"><i class="fa-solid fa-briefcase"></i><span>Software Development Engineer at <strong>Google</strong></span></div>
+                            <div class="about-row"><i class="fa-solid fa-graduation-cap"></i><span>B.Tech Computer Science, <strong>IIT Bombay</strong> &mdash; Class of 2026</span></div>
+                            <div class="about-row"><i class="fa-solid fa-location-dot"></i><span>Bangalore, India</span></div>
+                            <div class="about-row"><i class="fa-brands fa-linkedin"></i><span><a href="https://linkedin.com/in/alexchen" target="_blank" class="about-link">linkedin.com/in/alexchen</a></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Right Sidebar -->
+            <aside class="profile-sidebar">
+                <!-- Skills -->
+                <div class="sidebar-widget">
+                    <h4 class="widget-title">Skills</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Data Structures</span>
+                        <span class="skill-tag">Algorithms</span>
+                        <span class="skill-tag">System Design</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Java</span>
+                        <span class="skill-tag">C++</span>
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">Distributed Systems</span>
+                    </div>
+                </div>
+                <!-- People Also Follow -->
+                <div class="sidebar-widget">
+                    <h4 class="widget-title">People Also Follow</h4>
+                    <div class="suggested-users">
+                        <div class="suggested-user">
+                            <img src="https://i.pravatar.cc/150?img=47" alt="Sarah Kim" class="suggested-avatar">
+                            <div class="suggested-info">
+                                <span class="suggested-name">Sarah Kim</span>
+                                <span class="suggested-desc">SDE Intern &middot; Amazon</span>
+                            </div>
+                            <button class="btn-follow-sm">Follow</button>
+                        </div>
+                        <div class="suggested-user">
+                            <img src="https://i.pravatar.cc/150?img=11" alt="David Lee" class="suggested-avatar">
+                            <div class="suggested-info">
+                                <span class="suggested-name">David Lee</span>
+                                <span class="suggested-desc">SDE II &middot; Microsoft</span>
+                            </div>
+                            <button class="btn-follow-sm">Follow</button>
+                        </div>
+                        <div class="suggested-user">
+                            <img src="https://i.pravatar.cc/150?img=60" alt="Priya Nair" class="suggested-avatar">
+                            <div class="suggested-info">
+                                <span class="suggested-name">Priya Nair</span>
+                                <span class="suggested-desc">SDE &middot; Meta</span>
+                            </div>
+                            <button class="btn-follow-sm">Follow</button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Dark mode
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = themeToggleBtn.querySelector('i');
+    const savedTheme = localStorage.getItem('insideHireTheme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+        document.body.classList.add('dark-theme');
+        themeIcon.classList.replace('fa-moon', 'fa-sun');
+    }
+    themeToggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-theme');
+        const isDark = document.body.classList.contains('dark-theme');
+        themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+        localStorage.setItem('insideHireTheme', isDark ? 'dark' : 'light');
+    });
+
+    // Follow toggle
+    const followBtn = document.getElementById('followBtn');
+    let following = false;
+    followBtn.addEventListener('click', () => {
+        following = !following;
+        followBtn.innerHTML = following
+            ? '<i class="fa-solid fa-user-check"></i> Following'
+            : '<i class="fa-solid fa-user-plus"></i> Follow';
+        followBtn.classList.toggle('following', following);
+    });
+
+    // Profile tabs
+    document.querySelectorAll('.profile-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+        });
+    });
+</script>
+</body>
+</html>

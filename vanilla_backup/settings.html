@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - InsideHire</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="logo"><i class="fa-solid fa-chart-line logo-icon"></i><span class="logo-text">InsideHire</span></div>
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="library.html" class="nav-item"><i class="fa-solid fa-book-open"></i><span>Library</span></a>
+            <a href="profile.html" class="nav-item"><i class="fa-regular fa-user"></i><span>Profile</span></a>
+            <a href="post.html" class="nav-item"><i class="fa-solid fa-layer-group"></i><span>Stories</span></a>
+            <a href="messages.html" class="nav-item"><i class="fa-solid fa-message"></i><span>Messages</span></a>
+            <a href="following.html" class="nav-item"><i class="fa-solid fa-users"></i><span>Following</span></a>
+        </nav>
+        <div class="sidebar-footer"><a href="#" class="nav-item active"><i class="fa-solid fa-gear"></i><span>Settings</span></a></div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search posts, companies, roles...">
+            </div>
+            <div class="top-actions">
+                <button class="theme-toggle" id="themeToggleBtn"><i class="fa-regular fa-moon"></i></button>
+                <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Write</button>
+                <div class="user-avatar"><img src="https://i.pravatar.cc/150?img=68" alt="User Avatar"></div>
+            </div>
+        </header>
+
+        <div class="settings-layout">
+            <!-- Settings Nav (Left) -->
+            <aside class="settings-nav">
+                <div class="settings-nav-section">
+                    <span class="settings-nav-label">Account</span>
+                    <a href="#account" class="settings-nav-item active" data-section="account"><i class="fa-regular fa-user"></i> Profile</a>
+                    <a href="#account" class="settings-nav-item" data-section="account"><i class="fa-solid fa-lock"></i> Password & Security</a>
+                    <a href="#account" class="settings-nav-item" data-section="account"><i class="fa-regular fa-envelope"></i> Email</a>
+                </div>
+                <div class="settings-nav-section">
+                    <span class="settings-nav-label">Preferences</span>
+                    <a href="#notifs" class="settings-nav-item" data-section="notifs"><i class="fa-regular fa-bell"></i> Notifications</a>
+                    <a href="#appearance" class="settings-nav-item" data-section="appearance"><i class="fa-solid fa-palette"></i> Appearance</a>
+                    <a href="#privacy" class="settings-nav-item" data-section="privacy"><i class="fa-solid fa-shield-halved"></i> Privacy</a>
+                </div>
+                <div class="settings-nav-section">
+                    <span class="settings-nav-label">Danger Zone</span>
+                    <a href="#danger" class="settings-nav-item danger-link" data-section="danger"><i class="fa-solid fa-triangle-exclamation"></i> Delete Account</a>
+                </div>
+            </aside>
+
+            <!-- Settings Content (Right) -->
+            <div class="settings-content">
+
+                <!-- Profile Settings -->
+                <section class="settings-section" id="account">
+                    <h2 class="settings-section-title">Profile Information</h2>
+                    <p class="settings-section-desc">Update your personal information as it appears on your profile.</p>
+
+                    <div class="settings-avatar-row">
+                        <img src="https://i.pravatar.cc/150?img=68" class="settings-avatar" alt="Current Avatar">
+                        <div>
+                            <button class="btn btn-primary btn-sm-settings">Change Photo</button>
+                            <p class="settings-hint">JPG, PNG or GIF &middot; Max 5MB</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-input" value="Alex Chen">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Username</label>
+                                <div class="input-prefix-group">
+                                    <span class="input-prefix">@</span>
+                                    <input type="text" class="form-input prefixed" value="alexchen">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Branch / Department</label>
+                                <input type="text" class="form-input" value="Computer Science">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Batch / Class Year</label>
+                                <input type="text" class="form-input" value="2026">
+                            </div>
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Headline</label>
+                            <input type="text" class="form-input" value="SDE @ Google · CS '26 · IIT Bombay">
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">LinkedIn URL</label>
+                            <input type="url" class="form-input" placeholder="https://linkedin.com/in/yourprofile">
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-primary">Save Changes</button>
+                            <button class="btn-cancel">Cancel</button>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="settings-divider"></div>
+
+                <!-- Appearance -->
+                <section class="settings-section" id="appearance">
+                    <h2 class="settings-section-title">Appearance</h2>
+                    <p class="settings-section-desc">Customize how InsideHire looks for you.</p>
+                    <div class="theme-options">
+                        <div class="theme-option selected-theme" id="lightThemeOpt">
+                            <div class="theme-preview light-preview">
+                                <div class="tp-sidebar"></div>
+                                <div class="tp-content">
+                                    <div class="tp-card"></div>
+                                    <div class="tp-card"></div>
+                                </div>
+                            </div>
+                            <span class="theme-label"><i class="fa-regular fa-sun"></i> Light</span>
+                        </div>
+                        <div class="theme-option" id="darkThemeOpt">
+                            <div class="theme-preview dark-preview">
+                                <div class="tp-sidebar dark"></div>
+                                <div class="tp-content dark">
+                                    <div class="tp-card dark"></div>
+                                    <div class="tp-card dark"></div>
+                                </div>
+                            </div>
+                            <span class="theme-label"><i class="fa-regular fa-moon"></i> Dark</span>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="settings-divider"></div>
+
+                <!-- Privacy -->
+                <section class="settings-section" id="privacy">
+                    <h2 class="settings-section-title">Privacy</h2>
+                    <p class="settings-section-desc">Control who can see your profile and content.</p>
+                    <div class="settings-toggles">
+                        <div class="settings-toggle-row">
+                            <div class="toggle-info">
+                                <span class="toggle-label">Public Profile</span>
+                                <span class="toggle-desc">Anyone can see your profile and posts</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-toggle-row">
+                            <div class="toggle-info">
+                                <span class="toggle-label">Show Selection Status</span>
+                                <span class="toggle-desc">Display your Selected / Not Selected badge publicly</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-toggle-row">
+                            <div class="toggle-info">
+                                <span class="toggle-label">Allow Referral Requests</span>
+                                <span class="toggle-desc">Other users can send you referral requests</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-toggle-row">
+                            <div class="toggle-info">
+                                <span class="toggle-label">Show in Search Results</span>
+                                <span class="toggle-desc">Allow your profile to appear in search</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="settings-divider"></div>
+
+                <!-- Danger Zone -->
+                <section class="settings-section danger-section" id="danger">
+                    <h2 class="settings-section-title danger-title">Danger Zone</h2>
+                    <p class="settings-section-desc">Irreversible and destructive actions. Proceed with caution.</p>
+                    <div class="danger-actions">
+                        <div class="danger-row">
+                            <div>
+                                <span class="danger-action-title">Delete Account</span>
+                                <span class="danger-action-desc">Permanently delete your account and all data. This cannot be undone.</span>
+                            </div>
+                            <button class="danger-btn">Delete Account</button>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = themeToggleBtn.querySelector('i');
+    const savedTheme = localStorage.getItem('insideHireTheme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) { document.body.classList.add('dark-theme'); themeIcon.classList.replace('fa-moon', 'fa-sun'); document.getElementById('darkThemeOpt').classList.add('selected-theme'); document.getElementById('lightThemeOpt').classList.remove('selected-theme'); }
+    themeToggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-theme');
+        const isDark = document.body.classList.contains('dark-theme');
+        themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+        localStorage.setItem('insideHireTheme', isDark ? 'dark' : 'light');
+    });
+
+    document.getElementById('lightThemeOpt').addEventListener('click', () => {
+        document.body.classList.remove('dark-theme');
+        themeIcon.classList.replace('fa-sun', 'fa-moon');
+        localStorage.setItem('insideHireTheme', 'light');
+        document.querySelectorAll('.theme-option').forEach(t => t.classList.remove('selected-theme'));
+        document.getElementById('lightThemeOpt').classList.add('selected-theme');
+    });
+    document.getElementById('darkThemeOpt').addEventListener('click', () => {
+        document.body.classList.add('dark-theme');
+        themeIcon.classList.replace('fa-moon', 'fa-sun');
+        localStorage.setItem('insideHireTheme', 'dark');
+        document.querySelectorAll('.theme-option').forEach(t => t.classList.remove('selected-theme'));
+        document.getElementById('darkThemeOpt').classList.add('selected-theme');
+    });
+</script>
+</body>
+</html>
