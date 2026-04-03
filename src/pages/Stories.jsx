@@ -4,7 +4,7 @@ import { doc, getDoc, collection, query, orderBy, getDocs, addDoc, serverTimesta
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
 import { notifyUser } from '../utils/notifications';
-import './post.css';
+import '../styles/post.css';
 
 const formatDate = (timestamp) => {
   if (!timestamp) return '';

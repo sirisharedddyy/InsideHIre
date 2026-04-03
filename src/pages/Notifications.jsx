@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { collection, query, orderBy, onSnapshot, doc, updateDoc, writeBatch, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
-import './notifications.css';
+import '../styles/notifications.css';
 
 const formatTimeAgo = (timestamp) => {
   if (!timestamp) return 'Just now';

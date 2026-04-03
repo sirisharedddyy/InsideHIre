@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { collection, query, orderBy, getDocs, limit, doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
-import './search.css';
+import '../styles/search.css';
 
 const formatDate = (ts) => {
   if (!ts) return '';

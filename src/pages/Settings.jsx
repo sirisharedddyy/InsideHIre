@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { updateProfile, updatePassword, updateEmail, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../firebase';
-import './settings.css';
+import '../styles/settings.css';
 
 const Settings = () => {
   const { currentUser, userProfile, saveProfile } = useAuth();
