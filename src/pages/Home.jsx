@@ -45,6 +45,7 @@ const Home = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [bookmarkedIds, setBookmarkedIds] = useState(new Set());
+  const [followingIds, setFollowingIds] = useState(new Set());
 
   const toggleBookmark = async (e, post) => {
     e.stopPropagation();
@@ -63,11 +64,37 @@ const Home = () => {
     }
   };
 
+  const toggleFollow = async (e, authorId) => {
+    e.stopPropagation();
+    if (!currentUser || currentUser.uid === authorId) return;
+    const followingRef = doc(db, 'users', currentUser.uid, 'following', authorId);
+    const followerRef = doc(db, 'users', authorId, 'followers', currentUser.uid);
+
+    try {
+      if (followingIds.has(authorId)) {
+        await deleteDoc(followingRef);
+        await deleteDoc(followerRef);
+        setFollowingIds((prev) => { const s = new Set(prev); s.delete(authorId); return s; });
+      } else {
+        await setDoc(followingRef, { followedAt: serverTimestamp() });
+        await setDoc(followerRef, { followedAt: serverTimestamp() });
+        setFollowingIds((prev) => new Set([...prev, authorId]));
+      }
+    } catch (err) {
+      console.error('Failed to toggle follow:', err);
+    }
+  };
+
 
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
       try {
+        if (currentUser) {
+          const followSnap = await getDocs(collection(db, 'users', currentUser.uid, 'following'));
+          setFollowingIds(new Set(followSnap.docs.map(d => d.id)));
+        }
+
         let snap;
         try {
           // Preferred query: requires composite index (status + createdAt)
@@ -147,20 +174,42 @@ const Home = () => {
               style={{ cursor: 'pointer' }}
             >
               <div className="post-content">
-                <div className="post-meta">
-                  {post.authorAvatar ? (
-                    <img src={post.authorAvatar} alt={post.authorName} className="author-avatar" />
-                  ) : (
-                    <div className="author-avatar" style={{
-                      background: 'var(--primary-color)', color: '#fff',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontWeight: 700, fontSize: '0.85rem', borderRadius: '50%',
-                      width: 32, height: 32, flexShrink: 0,
-                    }}>
-                      {(post.authorName || 'A').charAt(0).toUpperCase()}
-                    </div>
+                <div className="post-meta" style={{ alignItems: 'center' }}>
+                  <div 
+                    onClick={(e) => { e.stopPropagation(); navigate(`/profile/${post.authorId}`); }}
+                    style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}
+                  >
+                    {post.authorAvatar ? (
+                      <img src={post.authorAvatar} alt={post.authorName} className="author-avatar" />
+                    ) : (
+                      <div className="author-avatar" style={{
+                        background: 'var(--primary-color)', color: '#fff',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontWeight: 700, fontSize: '0.85rem', borderRadius: '50%',
+                        width: 32, height: 32, flexShrink: 0,
+                      }}>
+                        {(post.authorName || 'A').charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <span className="author-name" style={{ fontWeight: 600 }}>{post.authorName || 'Anonymous'}</span>
+                  </div>
+
+                  {/* Inline Follow Button */}
+                  {currentUser?.uid !== post.authorId && !followingIds.has(post.authorId) && (
+                    <button 
+                      onClick={(e) => toggleFollow(e, post.authorId)}
+                      style={{
+                        background: 'transparent', border: 'none', color: 'var(--primary-color)',
+                        fontWeight: 'bold', fontSize: '0.8rem', cursor: 'pointer', padding: '0 0.2rem'
+                      }}
+                    >
+                      Follow
+                    </button>
                   )}
-                  <span className="author-name">{post.authorName || 'Anonymous'}</span>
+                  {followingIds.has(post.authorId) && (
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-light)', background: 'var(--hover-bg)', padding: '0.1rem 0.5rem', borderRadius: '12px' }}>Following</span>
+                  )}
+
                   <span className="meta-dot">&middot;</span>
                   <span className="post-date">{formatDate(post.createdAt)}</span>
                   {post.category && (

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, query, orderBy, getDocs, limit } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, limit, doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
+import { useAuth } from '../context/AuthContext';
 import './search.css';
 
 const formatDate = (ts) => {
@@ -10,7 +11,7 @@ const formatDate = (ts) => {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 };
 
-// Highlight matching term in text
+// Highlight matching term in text safely
 const highlight = (text = '', term = '') => {
   if (!term.trim()) return text;
   const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
@@ -19,12 +20,17 @@ const highlight = (text = '', term = '') => {
 
 const Search = () => {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [allPosts, setAllPosts] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
+  
+  const [activeCompanies, setActiveCompanies] = useState(new Set());
+  const [activeCategories, setActiveCategories] = useState(new Set());
+  const [bookmarkedIds, setBookmarkedIds] = useState(new Set());
 
   // Fetch all published posts once
   useEffect(() => {
@@ -38,6 +44,12 @@ const Search = () => {
           .filter((p) => p.status === 'published');
         setAllPosts(data);
         setFiltered(data);
+        
+        // Load bookmarks
+        if (currentUser) {
+          const bmSnap = await getDocs(collection(db, 'users', currentUser.uid, 'bookmarks'));
+          setBookmarkedIds(new Set(bmSnap.docs.map(d => d.id)));
+        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -45,10 +57,14 @@ const Search = () => {
       }
     };
     fetchAll();
-  }, []);
+  }, [currentUser]);
+
+  // Derived filter options
+  const companyOptions = Array.from(new Set(allPosts.map(p => p.company).filter(Boolean)));
+  const categoryOptions = Array.from(new Set(allPosts.map(p => p.category).filter(Boolean)));
 
   // Filter + search in memory
-  const applySearch = useCallback(() => {
+  const applyFilters = useCallback(() => {
     let results = [...allPosts];
     const term = searchTerm.toLowerCase().trim();
 
@@ -63,162 +79,192 @@ const Search = () => {
       );
     }
 
+    if (activeCompanies.size > 0) {
+      results = results.filter(p => p.company && activeCompanies.has(p.company));
+    }
+    
+    if (activeCategories.size > 0) {
+      results = results.filter(p => p.category && activeCategories.has(p.category));
+    }
+
     if (sortBy === 'newest') results.sort((a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0));
     setFiltered(results);
-  }, [searchTerm, allPosts, sortBy, activeFilter]);
+  }, [searchTerm, allPosts, sortBy, activeCompanies, activeCategories]);
 
-  useEffect(() => { applySearch(); }, [applySearch]);
+  useEffect(() => { applyFilters(); }, [applyFilters]);
 
-  const filterPills = [
-    { key: 'all', label: 'All', icon: 'fa-layer-group' },
-    { key: 'posts', label: 'Posts', icon: 'fa-newspaper' },
-  ];
+  // Handle toggles
+  const toggleSet = (set, val, setFn) => {
+    setFn(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(val)) newSet.delete(val);
+      else newSet.add(val);
+      return newSet;
+    });
+  };
 
-  const displayPosts = activeFilter === 'people' ? [] : filtered;
+  const toggleBookmark = async (e, post) => {
+    e.stopPropagation();
+    if (!currentUser) return alert('Please login to bookmark');
+    const bmRef = doc(db, 'users', currentUser.uid, 'bookmarks', post.id);
+    if (bookmarkedIds.has(post.id)) {
+      await deleteDoc(bmRef);
+      setBookmarkedIds(prev => { const s = new Set(prev); s.delete(post.id); return s; });
+    } else {
+      await setDoc(bmRef, {
+        title: post.title, company: post.company, role: post.role,
+        authorName: post.authorName, authorAvatar: post.authorAvatar || null,
+        excerpt: post.excerpt || '', savedAt: serverTimestamp(),
+      });
+      setBookmarkedIds(prev => new Set([...prev, post.id]));
+    }
+  };
 
   return (
-    <div style={{ display: 'flex', flex: 1, minWidth: 0 }}>
-      <div className="search-layout">
-        <div className="search-main">
-
-          {/* Live Search Bar */}
-          <div style={{ marginBottom: '1.2rem' }}>
-            <div style={{ position: 'relative' }}>
-              <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }}></i>
-              <input
-                id="search-input"
-                type="text"
-                placeholder="Search by company, role, tag, or author..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={{
-                  width: '100%', padding: '0.75rem 1rem 0.75rem 2.6rem',
-                  border: '1.5px solid var(--border-color)', borderRadius: '12px',
-                  background: 'var(--surface-color)', color: 'var(--text-main)',
-                  fontSize: '0.95rem', fontFamily: 'inherit', boxSizing: 'border-box',
-                  transition: 'border-color 0.2s',
-                }}
-                autoComplete="off"
-              />
-            </div>
+    <div style={{ display: 'flex', flex: 1, minWidth: 0, background: 'var(--bg-color)', minHeight: '100vh' }}>
+      <div className="search-layout" style={{ maxWidth: '1200px', margin: '0 auto', padding: '2.5rem 2rem', display: 'flex', gap: '2rem', width: '100%' }}>
+        
+        {/* Main Center Area */}
+        <div className="search-main" style={{ flex: 1 }}>
+          <h1 style={{ marginBottom: '1.5rem', fontWeight: 800, fontSize: '2.2rem', color: 'var(--text-main)' }}>Explore Experiences</h1>
+          
+          {/* Glassmorphic Live Search Bar */}
+          <div style={{ marginBottom: '2rem', position: 'relative' }}>
+            <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary-color)', fontSize: '1.2rem' }}></i>
+            <input
+              type="text"
+              placeholder="Search by company, role, topic, or author..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                width: '100%', padding: '1.2rem 1.2rem 1.2rem 3.5rem',
+                border: '1px solid var(--border-color)', borderRadius: '16px',
+                background: 'rgba(255, 255, 255, 0.6)', 
+                backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
+                color: 'var(--text-main)', fontSize: '1.1rem', fontFamily: 'inherit',
+                boxShadow: '0 8px 30px rgba(0,0,0,0.04)',
+                transition: 'all 0.3s ease',
+              }}
+              onFocus={(e) => { e.target.style.background = 'var(--surface-color)'; e.target.style.borderColor = 'var(--primary-color)'; e.target.style.boxShadow = '0 0 0 4px rgba(37,99,235,0.1)' }}
+              onBlur={(e) => { e.target.style.background = 'rgba(255, 255, 255, 0.6)'; e.target.style.borderColor = 'var(--border-color)'; e.target.style.boxShadow = '0 8px 30px rgba(0,0,0,0.04)' }}
+            />
           </div>
 
-          {/* Result count + sort */}
-          <div className="search-meta">
-            <p className="result-count">
-              <span>{loading ? '…' : displayPosts.length}</span> result{displayPosts.length !== 1 ? 's' : ''}
-              {searchTerm && <> for <strong>"{searchTerm}"</strong></>}
+          <div className="search-meta" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <p className="result-count" style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>
+              <strong style={{ color: 'var(--text-main)' }}>{loading ? '…' : filtered.length}</strong> result{filtered.length !== 1 ? 's' : ''}
+              {searchTerm && <> for <span style={{ color: 'var(--primary-color)' }}>"{searchTerm}"</span></>}
             </p>
             <div className="sort-control">
-              <label>Sort:</label>
-              <select className="sort-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+              <select className="sort-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)} style={{ padding: '0.4rem 1rem', borderRadius: '12px', border: '1px solid var(--border-color)', background: 'var(--surface-color)', cursor: 'pointer', fontFamily: 'inherit' }}>
                 <option value="newest">Newest First</option>
                 <option value="relevant">Most Relevant</option>
               </select>
             </div>
           </div>
 
-          {/* Filter pills */}
-          <div className="search-filter-row">
-            {filterPills.map((f) => (
-              <button
-                key={f.key}
-                className={`search-filter-pill ${activeFilter === f.key ? 'active' : ''}`}
-                onClick={() => setActiveFilter(f.key)}
-              >
-                <i className={`fa-solid ${f.icon}`}></i> {f.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Results */}
           <div className="results-section">
-            <h2 className="results-section-title">Posts</h2>
-
             {loading && [1, 2, 3].map((n) => (
-              <div key={n} className="post-card" style={{ pointerEvents: 'none' }}>
-                <div className="post-content">
-                  <div style={{ height: 14, width: '60%', borderRadius: 6, background: 'var(--hover-bg)', marginBottom: '0.5rem' }} />
-                  <div style={{ height: 12, width: '80%', borderRadius: 6, background: 'var(--hover-bg)' }} />
-                </div>
-              </div>
+              <div key={n} style={{ height: 160, borderRadius: 16, background: 'var(--hover-bg)', marginBottom: '1rem' }} />
             ))}
 
-            {!loading && displayPosts.length === 0 && (
-              <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-light)' }}>
-                <i className="fa-regular fa-face-sad-tear" style={{ fontSize: '2.5rem', opacity: 0.4, display: 'block', marginBottom: '1rem' }}></i>
-                <p>No posts found{searchTerm ? ` for "${searchTerm}"` : ''}. Try a different search term.</p>
+            {!loading && filtered.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '4rem 2rem', color: 'var(--text-light)', background: 'var(--surface-color)', borderRadius: '16px', border: '1px dashed var(--border-color)' }}>
+                <i className="fa-regular fa-face-sad-tear" style={{ fontSize: '3rem', opacity: 0.4, display: 'block', marginBottom: '1rem' }}></i>
+                <h3>No exact matches found</h3>
+                <p>Try adjusting your filters or searching for something else.</p>
               </div>
             )}
 
-            {!loading && displayPosts.map((post) => (
+            {!loading && filtered.map((post) => (
               <article
                 key={post.id}
                 className="post-card"
                 onClick={() => navigate(`/stories/${post.id}`)}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', marginBottom: '1rem', padding: '1.2rem', border: '1px solid var(--border-color)', borderRadius: '16px', background: 'var(--surface-color)', transition: 'all 0.2s ease', position: 'relative' }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.borderColor = 'var(--primary-color)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.05)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.boxShadow = 'none' }}
               >
-                <div className="post-content">
-                  <div className="post-meta">
-                    {post.authorAvatar
-                      ? <img src={post.authorAvatar} alt={post.authorName} className="author-avatar" />
-                      : <div className="author-avatar" style={{ background: 'var(--primary-color)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, borderRadius: '50%', width: 32, height: 32 }}>{(post.authorName || 'A').charAt(0)}</div>
-                    }
-                    <span className="author-name">{post.authorName || 'Anonymous'}</span>
-                    <span className="meta-dot">&middot;</span>
-                    <span className="post-date">{formatDate(post.createdAt)}</span>
-                  </div>
-                  <h3
-                    className="post-title"
-                    dangerouslySetInnerHTML={{ __html: highlight(post.title, searchTerm) }}
-                  />
-                  <p
-                    className="post-preview"
-                    dangerouslySetInnerHTML={{ __html: highlight(post.excerpt || '', searchTerm) }}
-                  />
-                  <div className="post-footer">
-                    <div className="tags">
-                      {post.company && <span className="tag">#{post.company}</span>}
-                      {post.role && <span className="tag">#{post.role.replace(/\s+/g, '')}</span>}
-                      {Array.isArray(post.tags) && post.tags.slice(0, 2).map((t) => <span key={t} className="tag">#{t}</span>)}
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.6rem' }}>
+                      {post.authorAvatar
+                        ? <img src={post.authorAvatar} alt={post.authorName} style={{ width: 28, height: 28, borderRadius: '50%' }} />
+                        : <div style={{ background: 'var(--primary-color)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, borderRadius: '50%', width: 28, height: 28, fontSize: '0.8rem' }}>{(post.authorName || 'A').charAt(0)}</div>
+                      }
+                      <span style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-main)' }}>{post.authorName || 'Anonymous'}</span>
+                      <span style={{ color: 'var(--text-light)' }}>&middot;</span>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{formatDate(post.createdAt)}</span>
+                      {post.category && (
+                        <>
+                           <span style={{ color: 'var(--text-light)' }}>&middot;</span>
+                           <span style={{ fontSize: '0.8rem', padding: '0.1rem 0.5rem', background: 'var(--hover-bg)', borderRadius: '12px', color: 'var(--text-main)' }}>{post.category}</span>
+                        </>
+                      )}
                     </div>
-                    <div className="post-actions">
-                      <button className="action-btn" onClick={(e) => e.stopPropagation()}><i className="fa-regular fa-bookmark"></i></button>
+                    
+                    <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--text-main)', lineHeight: 1.3 }} dangerouslySetInnerHTML={{ __html: highlight(post.title, searchTerm) }} />
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.5, marginBottom: '1rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: highlight(post.excerpt || '', searchTerm) }} />
+                    
+                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      {post.company && <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '12px', background: 'var(--text-main)', color: '#fff' }}>{post.company}</span>}
+                      {post.role && <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '12px', background: 'var(--hover-bg)', color: 'var(--text-main)', border: '1px solid var(--border-color)' }}>{post.role}</span>}
+                    </div>
+                  </div>
+                  
+                  {/* Decorative Company Initial */}
+                  <div style={{ display: 'none' }} className="responsive-logo">
+                    <div style={{ width: 60, height: 60, borderRadius: 12, background: 'var(--hover-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary-color)' }}>
+                      {(post.company || '?').charAt(0).toUpperCase()}
                     </div>
                   </div>
                 </div>
-                <div className="post-company-logo">
-                  <span style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary-color)' }}>
-                    {(post.company || '?').charAt(0).toUpperCase()}
-                  </span>
-                </div>
+
+                {/* Bookmark Toggle */}
+                <button 
+                  onClick={(e) => toggleBookmark(e, post)}
+                  style={{ position: 'absolute', right: '1.2rem', top: '1.2rem', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.2rem', transition: 'transform 0.2s' }}
+                  onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                  onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                >
+                  <i className={bookmarkedIds.has(post.id) ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark'} style={bookmarkedIds.has(post.id) ? { color: 'var(--primary-color)' } : { color: 'var(--text-light)' }}></i>
+                </button>
               </article>
             ))}
           </div>
         </div>
 
-        {/* Sidebar filters */}
-        <aside className="search-sidebar">
-          <div className="search-widget">
-            <h4 className="search-widget-title">Filter by Company</h4>
-            <div className="filter-options">
-              {['Google', 'Amazon', 'Microsoft', 'Meta', 'Apple'].map((c) => {
-                const count = allPosts.filter((p) => p.company?.toLowerCase() === c.toLowerCase()).length;
-                return (
-                  <label key={c} className="filter-check" style={{ cursor: 'pointer' }} onClick={() => setSearchTerm(searchTerm === c ? '' : c)}>
-                    <input type="checkbox" readOnly checked={searchTerm.toLowerCase() === c.toLowerCase()} /> {c} <span className="filter-count">{count}</span>
+        {/* Sidebar Filters */}
+        <aside className="search-sidebar" style={{ width: '280px', flexShrink: 0, position: 'sticky', top: '90px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          
+          {companyOptions.length > 0 && (
+            <div style={{ background: 'var(--surface-color)', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
+              <h4 style={{ marginBottom: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}><i className="fa-solid fa-building" style={{ color: 'var(--primary-color)' }}></i> Filter by Company</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {companyOptions.map((c) => (
+                  <label key={c} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', fontSize: '0.9rem', color: activeCompanies.has(c) ? 'var(--text-main)' : 'var(--text-secondary)' }}>
+                    <input type="checkbox" checked={activeCompanies.has(c)} onChange={() => toggleSet(activeCompanies, c, setActiveCompanies)} style={{ accentColor: 'var(--primary-color)', width: 16, height: 16, cursor: 'pointer' }} /> 
+                    <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c}</span>
                   </label>
-                );
-              })}
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="search-widget">
-            <h4 className="search-widget-title">Outcome</h4>
-            <div className="filter-options">
-              <label className="filter-check"><input type="checkbox" /> Selected Only</label>
-              <label className="filter-check"><input type="checkbox" /> Not Selected</label>
+          )}
+
+          {categoryOptions.length > 0 && (
+            <div style={{ background: 'var(--surface-color)', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
+              <h4 style={{ marginBottom: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}><i className="fa-solid fa-layer-group" style={{ color: 'var(--primary-color)' }}></i> Topic Category</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {categoryOptions.map((cat) => (
+                  <label key={cat} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', fontSize: '0.9rem', color: activeCategories.has(cat) ? 'var(--text-main)' : 'var(--text-secondary)' }}>
+                    <input type="checkbox" checked={activeCategories.has(cat)} onChange={() => toggleSet(activeCategories, cat, setActiveCategories)} style={{ accentColor: 'var(--primary-color)', width: 16, height: 16, cursor: 'pointer' }} /> 
+                    <span style={{ flex: 1 }}>{cat}</span>
+                  </label>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+          
         </aside>
       </div>
     </div>

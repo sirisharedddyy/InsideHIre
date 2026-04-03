@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './index.css';
 
@@ -18,6 +19,11 @@ import Onboarding from './pages/Onboarding';
 import Login from './pages/Login';
 
 function App() {
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') document.body.classList.add('dark-theme');
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -37,12 +43,14 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/library" element={<Library />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/stories/:postId" element={<Stories />} />
           <Route path="/stories" element={<Stories />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/following" element={<Following />} />
           <Route path="/search" element={<Search />} />
           <Route path="/company" element={<Company />} />
+          <Route path="/company/:companyName" element={<Company />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/settings" element={<Settings />} />
 

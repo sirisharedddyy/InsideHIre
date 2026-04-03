@@ -7,6 +7,7 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
+  sendEmailVerification
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
@@ -25,13 +26,15 @@ export const AuthProvider = ({ children }) => {
   // Sign up with email/password
   const signup = async (email, password) => {
     const result = await createUserWithEmailAndPassword(auth, email, password);
+    // Send standard email verification to their inbox upon successful formulation
+    await sendEmailVerification(result.user);
     return result;
   };
 
   // Save extra profile data to Firestore
   const saveProfile = async (uid, profileData) => {
     await setDoc(doc(db, 'users', uid), profileData, { merge: true });
-    setUserProfile(profileData);
+    setUserProfile((prev) => ({ ...prev, ...profileData }));
   };
 
   // Sign in with email/password

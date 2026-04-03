@@ -1,208 +1,162 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, writeBatch, deleteDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+import { useAuth } from '../context/AuthContext';
 import './notifications.css';
 
+const formatTimeAgo = (timestamp) => {
+  if (!timestamp) return 'Just now';
+  const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+  const seconds = Math.floor((new Date() - date) / 1000);
+  if (seconds < 60) return `${Math.floor(seconds)}s ago`;
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
+};
+
+const getIconForType = (type) => {
+  switch (type) {
+    case 'comment': return <i className="fa-regular fa-comment"></i>;
+    case 'reaction': return <i className="fa-solid fa-hands-clapping"></i>;
+    case 'follow': return <i className="fa-solid fa-user-plus"></i>;
+    default: return <i className="fa-regular fa-bell"></i>;
+  }
+};
+
 const Notifications = () => {
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
+  const [notifications, setNotifications] = useState([]);
+  const [filter, setFilter] = useState('all');
+
+  useEffect(() => {
+    if (!currentUser) return;
+    const q = query(collection(db, 'users', currentUser.uid, 'notifications'), orderBy('createdAt', 'desc'));
+    const unsubscribe = onSnapshot(q, (snap) => {
+      setNotifications(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+    return () => unsubscribe();
+  }, [currentUser]);
+
+  const markAllRead = async () => {
+    if (!currentUser) return;
+    const unread = notifications.filter(n => !n.isRead);
+    if (!unread.length) return;
+    const batch = writeBatch(db);
+    unread.forEach(n => {
+      batch.update(doc(db, 'users', currentUser.uid, 'notifications', n.id), { isRead: true });
+    });
+    await batch.commit();
+  };
+
+  const markAsRead = async (id, isRead) => {
+    if (!currentUser || isRead) return;
+    await updateDoc(doc(db, 'users', currentUser.uid, 'notifications', id), { isRead: true });
+  };
+
+  const deleteNotification = async (e, id) => {
+    e.stopPropagation();
+    if (!currentUser) return;
+    await deleteDoc(doc(db, 'users', currentUser.uid, 'notifications', id));
+  };
+
+  const handleNotifClick = (notif) => {
+    markAsRead(notif.id, notif.isRead);
+    if (notif.link) navigate(notif.link);
+  };
+
+  const filteredNotifs = notifications.filter(n => {
+    if (filter === 'all') return true;
+    return n.type === filter;
+  });
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
+
   return (
     <div style={{ display: 'flex', flex: 1, minWidth: 0 }}>
-      
-
-        <div className="notif-layout">
-            <div className="notif-main">
-                
-                <div className="notif-header">
-                    <div>
-                        <h1>Notifications</h1>
-                        <p className="notif-subtitle">You have <strong>5 unread</strong> notifications</p>
-                    </div>
-                    <button className="mark-all-read-btn" id="markAllReadBtn">
-                        <i className="fa-solid fa-check-double"></i> Mark all as read
-                    </button>
-                </div>
-
-                
-                <div className="notif-tabs">
-                    <button className="notif-tab active" data-filter="all">All</button>
-                    <button className="notif-tab" data-filter="reactions">Reactions</button>
-                    <button className="notif-tab" data-filter="comments">Comments</button>
-                    <button className="notif-tab" data-filter="follows">Follows</button>
-                    <button className="notif-tab" data-filter="referrals">Referrals</button>
-                </div>
-
-                
-                <div className="notif-list" id="notifList">
-
-                    
-                    <div className="notif-item unread" data-type="reactions">
-                        <div className="notif-icon-wrap reaction-icon">
-                            <i className="fa-regular fa-lightbulb"></i>
-                        </div>
-                        <div className="notif-body">
-                            <p className="notif-text"><strong>Sarah Kim</strong> and <strong>23 others</strong> found your post <a href="post.html" className="notif-link">"Aced My Google SDE Interview"</a> Insightful</p>
-                            <span className="notif-time"><i className="fa-regular fa-clock"></i> 10 minutes ago</span>
-                        </div>
-                        <div className="notif-actions">
-                            <img src="https://i.pravatar.cc/150?img=12" className="notif-thumb-avatar" alt="Sarah" />
-                            <button className="notif-dismiss" title="Dismiss"><i className="fa-solid fa-xmark"></i></button>
-                        </div>
-                    </div>
-
-                    <div className="notif-item unread" data-type="comments">
-                        <div className="notif-icon-wrap comment-icon">
-                            <i className="fa-regular fa-comment"></i>
-                        </div>
-                        <div className="notif-body">
-                            <p className="notif-text"><strong>Michael Ross</strong> replied to your comment: <em>"Could you share which resources..."</em></p>
-                            <span className="notif-time"><i className="fa-regular fa-clock"></i> 1 hour ago</span>
-                        </div>
-                        <div className="notif-actions">
-                            <img src="https://i.pravatar.cc/150?img=45" className="notif-thumb-avatar" alt="Michael" />
-                            <button className="notif-dismiss" title="Dismiss"><i className="fa-solid fa-xmark"></i></button>
-                        </div>
-                    </div>
-
-                    <div className="notif-item unread" data-type="referrals">
-                        <div className="notif-icon-wrap referral-icon">
-                            <i className="fa-solid fa-user-check"></i>
-                        </div>
-                        <div className="notif-body">
-                            <p className="notif-text"><strong>Priya Nair</strong> sent you a <strong>referral request</strong> for <strong>Google SDE</strong> position</p>
-                            <span className="notif-time"><i className="fa-regular fa-clock"></i> 2 hours ago</span>
-                            <div className="notif-cta-row">
-                                <button className="notif-cta-btn accept-btn">Accept</button>
-                                <button className="notif-cta-btn decline-btn">Decline</button>
-                            </div>
-                        </div>
-                        <div className="notif-actions">
-                            <img src="https://i.pravatar.cc/150?img=60" className="notif-thumb-avatar" alt="Priya" />
-                        </div>
-                    </div>
-
-                    <div className="notif-item unread" data-type="follows">
-                        <div className="notif-icon-wrap follow-icon">
-                            <i className="fa-solid fa-user-plus"></i>
-                        </div>
-                        <div className="notif-body">
-                            <p className="notif-text"><strong>David Lee</strong> started following you</p>
-                            <span className="notif-time"><i className="fa-regular fa-clock"></i> 3 hours ago</span>
-                            <button className="notif-cta-btn follow-back-btn">Follow Back</button>
-                        </div>
-                        <div className="notif-actions">
-                            <img src="https://i.pravatar.cc/150?img=11" className="notif-thumb-avatar" alt="David" />
-                            <button className="notif-dismiss" title="Dismiss"><i className="fa-solid fa-xmark"></i></button>
-                        </div>
-                    </div>
-
-                    <div className="notif-item unread" data-type="reactions">
-                        <div className="notif-icon-wrap congrats-icon">
-                            <i className="fa-solid fa-hands-clapping"></i>
-                        </div>
-                        <div className="notif-body">
-                            <p className="notif-text"><strong>John Doe</strong> and <strong>11 others</strong> congratulated you on your post <a href="post.html" className="notif-link">"Aced My Google SDE Interview"</a></p>
-                            <span className="notif-time"><i className="fa-regular fa-clock"></i> 5 hours ago</span>
-                        </div>
-                        <div className="notif-actions">
-                            <img src="https://i.pravatar.cc/150?img=44" className="notif-thumb-avatar" alt="John" />
-                            <button className="notif-dismiss" title="Dismiss"><i className="fa-solid fa-xmark"></i></button>
-                        </div>
-                    </div>
-
-                    
-                    <div className="notif-read-divider"><span>Earlier</span></div>
-
-                    
-                    <div className="notif-item read" data-type="follows">
-                        <div className="notif-icon-wrap follow-icon dimmed">
-                            <i className="fa-solid fa-user-plus"></i>
-                        </div>
-                        <div className="notif-body">
-                            <p className="notif-text"><strong>Emily Davis</strong> started following you</p>
-                            <span className="notif-time"><i className="fa-regular fa-clock"></i> Yesterday</span>
-                        </div>
-                        <div className="notif-actions">
-                            <img src="https://i.pravatar.cc/150?img=33" className="notif-thumb-avatar dimmed-img" alt="Emily" />
-                        </div>
-                    </div>
-
-                    <div className="notif-item read" data-type="comments">
-                        <div className="notif-icon-wrap comment-icon dimmed">
-                            <i className="fa-regular fa-comment"></i>
-                        </div>
-                        <div className="notif-body">
-                            <p className="notif-text"><strong>Sarah Kim</strong> commented on your post: <em>"This is incredibly helpful!..."</em></p>
-                            <span className="notif-time"><i className="fa-regular fa-clock"></i> 2 days ago</span>
-                        </div>
-                        <div className="notif-actions">
-                            <img src="https://i.pravatar.cc/150?img=12" className="notif-thumb-avatar dimmed-img" alt="Sarah" />
-                        </div>
-                    </div>
-
-                    <div className="notif-item read" data-type="reactions">
-                        <div className="notif-icon-wrap helpful-icon dimmed">
-                            <i className="fa-solid fa-handshake-angle"></i>
-                        </div>
-                        <div className="notif-body">
-                            <p className="notif-text"><strong>45 people</strong> found your post <a href="post.html" className="notif-link">"Aced My Google SDE Interview"</a> Helpful</p>
-                            <span className="notif-time"><i className="fa-regular fa-clock"></i> 3 days ago</span>
-                        </div>
-                        <div className="notif-actions">
-                            <button className="notif-dismiss" title="Dismiss"><i className="fa-solid fa-xmark"></i></button>
-                        </div>
-                    </div>
-
-                </div>
+      <div className="notif-layout">
+        <div className="notif-main">
+          
+          <div className="notif-header">
+            <div>
+              <h1>Notifications</h1>
+              <p className="notif-subtitle">
+                You have <strong>{unreadCount} unread</strong> notification{unreadCount !== 1 && 's'}
+              </p>
             </div>
+            {unreadCount > 0 && (
+              <button className="mark-all-read-btn" onClick={markAllRead}>
+                <i className="fa-solid fa-check-double"></i> Mark all as read
+              </button>
+            )}
+          </div>
 
-            
-            <aside className="notif-sidebar">
-                <div className="notif-sidebar-widget">
-                    <h4 className="notif-widget-title">Notification Settings</h4>
-                    <div className="notif-settings-list">
-                        <div className="notif-setting-item">
-                            <div className="setting-info">
-                                <span className="setting-name">Reactions</span>
-                                <span className="setting-desc">When someone reacts to your post</span>
-                            </div>
-                            <label className="toggle-switch">
-                                <input type="checkbox" checked />
-                                <span className="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div className="notif-setting-item">
-                            <div className="setting-info">
-                                <span className="setting-name">Comments</span>
-                                <span className="setting-desc">Replies to your posts</span>
-                            </div>
-                            <label className="toggle-switch">
-                                <input type="checkbox" checked />
-                                <span className="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div className="notif-setting-item">
-                            <div className="setting-info">
-                                <span className="setting-name">New Followers</span>
-                                <span className="setting-desc">When someone follows you</span>
-                            </div>
-                            <label className="toggle-switch">
-                                <input type="checkbox" checked />
-                                <span className="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div className="notif-setting-item">
-                            <div className="setting-info">
-                                <span className="setting-name">Referral Requests</span>
-                                <span className="setting-desc">New referral requests</span>
-                            </div>
-                            <label className="toggle-switch">
-                                <input type="checkbox" checked />
-                                <span className="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
+          <div className="notif-tabs">
+            {['all', 'reactions', 'comments', 'follows'].map(f => (
+              <button key={f} className={`notif-tab ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)}>
+                {f.charAt(0).toUpperCase() + f.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          <div className="notif-list">
+            {filteredNotifs.length === 0 && (
+              <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-light)' }}>
+                <i className="fa-regular fa-bell-slash" style={{ fontSize: '2rem', marginBottom: '1rem', opacity: 0.5 }}></i>
+                <p>No notifications to display.</p>
+              </div>
+            )}
+
+            {filteredNotifs.map((notif) => (
+              <div key={notif.id} className={`notif-item ${notif.isRead ? 'read' : 'unread'}`} style={{ cursor: notif.link ? 'pointer' : 'default' }} onClick={() => handleNotifClick(notif)}>
+                <div className={`notif-icon-wrap ${notif.type}-icon ${notif.isRead ? 'dimmed' : ''}`}>
+                  {getIconForType(notif.type)}
                 </div>
-            </aside>
-
+                <div className="notif-body">
+                  <p className="notif-text">
+                    <strong>{notif.actorName || 'Someone'}</strong> {notif.text}
+                  </p>
+                  <span className="notif-time"><i className="fa-regular fa-clock"></i> {formatTimeAgo(notif.createdAt)}</span>
+                </div>
+                <div className="notif-actions">
+                  {notif.actorAvatar && (
+                    <img src={notif.actorAvatar} className={`notif-thumb-avatar ${notif.isRead ? 'dimmed-img' : ''}`} alt={notif.actorName} />
+                  )}
+                  <button className="notif-dismiss" onClick={(e) => deleteNotification(e, notif.id)}>
+                    <i className="fa-solid fa-xmark"></i>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-    
+
+        {/* Sidebar */}
+        <aside className="notif-sidebar">
+          <div className="notif-sidebar-widget">
+            <h4 className="notif-widget-title">Notification Settings</h4>
+            <div className="notif-settings-list">
+              <div className="notif-setting-item">
+                <div className="setting-info">
+                  <span className="setting-name">Push Subscriptions</span>
+                  <span className="setting-desc">Enable silent push delivery</span>
+                </div>
+                <label className="toggle-switch">
+                  <input type="checkbox" defaultChecked />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-light)', marginTop: '2rem' }}>
+              Advanced notification settings are configured securely in your Profile Settings panel.
+            </p>
+          </div>
+        </aside>
+
+      </div>
     </div>
   );
 };

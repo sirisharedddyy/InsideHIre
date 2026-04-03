@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
+import { useParams, useNavigate } from 'react-router-dom';
+import { collection, query, where, orderBy, getDocs, doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
 import './Profile.css';
@@ -17,40 +17,60 @@ const BRANCH_LABELS = {
 };
 
 const Profile = () => {
+  const { userId } = useParams();
   const navigate = useNavigate();
-  const { currentUser, userProfile } = useAuth();
+  const { currentUser, userProfile: currentUserProfile } = useAuth();
+  
+  const targetUid = userId || currentUser?.uid;
+  const isOwnProfile = !userId || userId === currentUser?.uid;
+
   const [activeTab, setActiveTab] = useState('posts');
+  const [profileUser, setProfileUser] = useState(null);
+  
   const [myPosts, setMyPosts] = useState([]);
   const [postsLoading, setPostsLoading] = useState(true);
+  
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
 
-  // Derived display values from real auth data
-  const displayName = userProfile?.name || currentUser?.displayName || 'User';
-  const avatarUrl = userProfile?.photoURL || currentUser?.photoURL || null;
-  const initials = displayName.charAt(0).toUpperCase();
-  const branch = BRANCH_LABELS[userProfile?.branch] || userProfile?.branch || '';
-  const batch = userProfile?.batch || '';
-  const linkedin = userProfile?.linkedin || '';
-  const degree = userProfile?.degree?.toUpperCase() || '';
-  const email = currentUser?.email || '';
-
-  // Fetch this user's published posts
+  // 1. Fetch User Profile Data
   useEffect(() => {
-    if (!currentUser?.uid) return;
-    const fetchMyPosts = async () => {
+    if (!targetUid) return;
+    const fetchUser = async () => {
+      if (isOwnProfile && currentUserProfile) {
+        setProfileUser({ uid: targetUid, email: currentUser.email, ...currentUserProfile });
+      } else {
+        try {
+          const snap = await getDoc(doc(db, 'users', targetUid));
+          if (snap.exists()) {
+            setProfileUser({ uid: snap.id, ...snap.data() });
+          } else {
+            console.error('User not found');
+          }
+        } catch (err) { console.error(err); }
+      }
+    };
+    fetchUser();
+  }, [targetUid, isOwnProfile, currentUserProfile, currentUser]);
+
+  // 2. Fetch User's Posts
+  useEffect(() => {
+    if (!targetUid) return;
+    const fetchPosts = async () => {
       setPostsLoading(true);
       try {
         const q = query(
           collection(db, 'posts'),
-          where('authorId', '==', currentUser.uid),
+          where('authorId', '==', targetUid),
           where('status', '==', 'published'),
           orderBy('createdAt', 'desc')
         );
         const snap = await getDocs(q);
         setMyPosts(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       } catch (err) {
-        // Fallback without where('status') if index isn't ready
         try {
-          const q2 = query(collection(db, 'posts'), where('authorId', '==', currentUser.uid), orderBy('createdAt', 'desc'));
+          const q2 = query(collection(db, 'posts'), where('authorId', '==', targetUid), orderBy('createdAt', 'desc'));
           const snap2 = await getDocs(q2);
           setMyPosts(snap2.docs.map((d) => ({ id: d.id, ...d.data() })).filter(p => p.status === 'published'));
         } catch (e) { console.error(e); }
@@ -58,14 +78,69 @@ const Profile = () => {
         setPostsLoading(false);
       }
     };
-    fetchMyPosts();
-  }, [currentUser]);
+    fetchPosts();
+  }, [targetUid]);
+
+  // 3. Fetch Follow State and Counts
+  useEffect(() => {
+    if (!targetUid) return;
+    const fetchFollowData = async () => {
+      // Check if current user is following this profile (if it's not their own)
+      if (currentUser && !isOwnProfile) {
+        const fSnap = await getDoc(doc(db, 'users', currentUser.uid, 'following', targetUid));
+        setIsFollowing(fSnap.exists());
+      }
+      
+      // Calculate Follower/Following counts
+      try {
+        const followersSnap = await getDocs(collection(db, 'users', targetUid, 'followers'));
+        setFollowerCount(followersSnap.size);
+        
+        const followingSnap = await getDocs(collection(db, 'users', targetUid, 'following'));
+        setFollowingCount(followingSnap.size);
+      } catch (err) { console.error(err); }
+    };
+    fetchFollowData();
+  }, [targetUid, currentUser, isOwnProfile]);
+
+  // Follow/Unfollow Handler
+  const handleFollowToggle = async () => {
+    if (!currentUser) return alert('Please login to follow users');
+    if (isOwnProfile) return;
+
+    const followingRef = doc(db, 'users', currentUser.uid, 'following', targetUid);
+    const followerRef = doc(db, 'users', targetUid, 'followers', currentUser.uid);
+
+    try {
+      if (isFollowing) {
+        await deleteDoc(followingRef);
+        await deleteDoc(followerRef);
+        setIsFollowing(false);
+        setFollowerCount(prev => Math.max(0, prev - 1));
+      } else {
+        await setDoc(followingRef, { followedAt: new Date() });
+        await setDoc(followerRef, { followedAt: new Date() });
+        setIsFollowing(true);
+        setFollowerCount(prev => prev + 1);
+      }
+    } catch (err) { console.error('Failed to toggle follow:', err); }
+  };
+
+  if (!profileUser) return <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-light)' }}>Loading Profile...</div>;
+
+  const displayName = profileUser.name || 'User';
+  const avatarUrl = profileUser.photoURL || null;
+  const initials = displayName.charAt(0).toUpperCase();
+  const branch = BRANCH_LABELS[profileUser.branch] || profileUser.branch || '';
+  const batch = profileUser.batch || '';
+  const linkedin = profileUser.linkedin || '';
+  const degree = profileUser.degree?.toUpperCase() || '';
+  const email = profileUser.email || '';
 
   return (
     <div className="profile-layout" style={{ display: 'flex', gap: '2rem', padding: '2.5rem 2rem', alignItems: 'flex-start', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
       {/* Profile Main Column */}
       <div className="profile-main" style={{ flex: 1, minWidth: 0 }}>
-
         {/* Cover + Avatar */}
         <div className="profile-card">
           <div className="profile-cover"><div className="cover-gradient"></div></div>
@@ -77,11 +152,21 @@ const Profile = () => {
               }
             </div>
             <div className="profile-actions">
-              <button className="btn btn-primary" onClick={() => navigate('/write')}>
-                <i className="fa-solid fa-plus"></i> Write Post
-              </button>
+              {isOwnProfile ? (
+                 <button className="btn" style={{ border: '1px solid var(--border-color)', background: 'var(--surface-color)' }} onClick={() => alert('Settings page coming soon!')}>
+                   <i className="fa-solid fa-pen"></i> Edit Profile
+                 </button>
+              ) : (
+                <button 
+                  className={`btn ${isFollowing ? 'btn-secondary' : 'btn-primary'}`} 
+                  onClick={handleFollowToggle}
+                >
+                  {isFollowing ? 'Following' : <><i className="fa-solid fa-user-plus"></i> Follow</>}
+                </button>
+              )}
             </div>
           </div>
+          
           <div className="profile-info">
             <h1 className="profile-name">
               {displayName}
@@ -96,16 +181,16 @@ const Profile = () => {
             </p>
             <div className="profile-meta-row">
               {branch && <span className="profile-meta-item"><i className="fa-solid fa-graduation-cap"></i> {branch}{batch && ` · Class of ${batch}`}</span>}
-              <span className="profile-meta-item"><i className="fa-regular fa-envelope"></i> {email}</span>
+              {!isOwnProfile && <span className="profile-meta-item"><i className="fa-regular fa-envelope"></i> Reach out to connect</span>}
+              {isOwnProfile && email && <span className="profile-meta-item"><i className="fa-regular fa-envelope"></i> {email}</span>}
             </div>
+            
             <div className="profile-stats">
               <div className="stat-item"><span className="stat-number">{myPosts.length}</span><span className="stat-label">Posts</span></div>
               <div className="stat-divider"></div>
-              <div className="stat-item"><span className="stat-number">0</span><span className="stat-label">Followers</span></div>
+              <div className="stat-item"><span className="stat-number">{followerCount}</span><span className="stat-label">Followers</span></div>
               <div className="stat-divider"></div>
-              <div className="stat-item"><span className="stat-number">0</span><span className="stat-label">Following</span></div>
-              <div className="stat-divider"></div>
-              <div className="stat-item"><span className="stat-number">0</span><span className="stat-label">Reactions</span></div>
+              <div className="stat-item"><span className="stat-number">{followingCount}</span><span className="stat-label">Following</span></div>
             </div>
           </div>
         </div>
@@ -132,10 +217,14 @@ const Profile = () => {
               {!postsLoading && myPosts.length === 0 && (
                 <div className="empty-state" style={{ padding: '3rem', textAlign: 'center' }}>
                   <i className="fa-regular fa-newspaper" style={{ fontSize: '2.5rem', opacity: 0.3, display: 'block', marginBottom: '1rem' }}></i>
-                  <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>You haven't published any posts yet.</p>
-                  <button className="btn btn-primary" onClick={() => navigate('/write')}>
-                    <i className="fa-solid fa-plus"></i> Write your first post
-                  </button>
+                  <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                    {isOwnProfile ? "You haven't published any posts yet." : "This user hasn't published any posts yet."}
+                  </p>
+                  {isOwnProfile && (
+                    <button className="btn btn-primary" onClick={() => navigate('/write')}>
+                      <i className="fa-solid fa-plus"></i> Write your first post
+                    </button>
+                  )}
                 </div>
               )}
 
@@ -177,11 +266,11 @@ const Profile = () => {
           {activeTab === 'about' && (
             <div className="tab-content active">
               <div className="about-section">
-                {degree && branch && <div className="about-row"><i className="fa-solid fa-graduation-cap"></i><span>{degree} in <strong>{BRANCH_LABELS[userProfile?.branch] || branch}</strong>{batch && ` — Class of ${batch}`}</span></div>}
-                {email && <div className="about-row"><i className="fa-regular fa-envelope"></i><span>{email}</span></div>}
+                {degree && branch && <div className="about-row"><i className="fa-solid fa-graduation-cap"></i><span>{degree} in <strong>{BRANCH_LABELS[profileUser.branch] || branch}</strong>{batch && ` — Class of ${batch}`}</span></div>}
+                {email && isOwnProfile && <div className="about-row"><i className="fa-regular fa-envelope"></i><span>{email}</span></div>}
                 {linkedin && <div className="about-row"><i className="fa-brands fa-linkedin"></i><span><a href={linkedin} target="_blank" rel="noreferrer" className="about-link">{linkedin}</a></span></div>}
-                {userProfile?.enrollment && <div className="about-row"><i className="fa-regular fa-id-badge"></i><span>Enrollment: <strong>{userProfile.enrollment}</strong></span></div>}
-                {!branch && !email && <p style={{ color: 'var(--text-light)', padding: '1rem 0' }}>No profile details yet.</p>}
+                {profileUser.enrollment && isOwnProfile && <div className="about-row"><i className="fa-regular fa-id-badge"></i><span>Enrollment: <strong>{profileUser.enrollment}</strong></span></div>}
+                {!branch && !linkedin && <p style={{ color: 'var(--text-light)', padding: '1rem 0' }}>No profile details provided.</p>}
               </div>
             </div>
           )}
@@ -195,17 +284,20 @@ const Profile = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
             <div><i className="fa-solid fa-file-lines" style={{ width: 20, color: 'var(--primary-color)' }}></i> {myPosts.length} post{myPosts.length !== 1 ? 's' : ''} published</div>
             {batch && <div><i className="fa-solid fa-calendar" style={{ width: 20, color: 'var(--primary-color)' }}></i> Batch of {batch}</div>}
-            {branch && <div><i className="fa-solid fa-code-branch" style={{ width: 20, color: 'var(--primary-color)' }}></i> {BRANCH_LABELS[userProfile?.branch] || branch}</div>}
+            {branch && <div><i className="fa-solid fa-code-branch" style={{ width: 20, color: 'var(--primary-color)' }}></i> {BRANCH_LABELS[profileUser.branch] || branch}</div>}
           </div>
         </div>
-        <div className="sidebar-widget">
-          <h4 className="widget-title">Quick Actions</h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-            <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => navigate('/write')}>
-              <i className="fa-solid fa-plus"></i> Write New Post
-            </button>
+        
+        {isOwnProfile && (
+          <div className="sidebar-widget">
+            <h4 className="widget-title">Quick Actions</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+               <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => navigate('/write')}>
+                 <i className="fa-solid fa-plus"></i> Write New Post
+               </button>
+            </div>
           </div>
-        </div>
+        )}
       </aside>
     </div>
   );

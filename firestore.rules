@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Is fully authenticated
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // 1. Users Collection
+    match /users/{userId} {
+      // Anyone logged in can view profiles
+      allow read: if isSignedIn(); 
+      // Only the user can edit their own profile
+      allow write: if isSignedIn() && request.auth.uid == userId;
+      
+      // User's bookmarks
+      match /bookmarks/{bookmarkId} {
+        allow read, write: if isSignedIn() && request.auth.uid == userId;
+      }
+      
+      // User's social graph
+      match /following/{targetUid} {
+        allow read: if isSignedIn();
+        allow write: if isSignedIn() && request.auth.uid == userId;
+      }
+      match /followers/{followerUid} {
+        allow read: if isSignedIn();
+        // Only the person actively "following" can add themselves to the target's follower list
+        allow write: if isSignedIn() && request.auth.uid == followerUid;
+      }
+    }
+
+    // 2. Posts Collection
+    match /posts/{postId} {
+      allow read: if isSignedIn();
+      
+      // Only the genuine author can create/delete their post
+      allow create: if isSignedIn() && request.resource.data.authorId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.authorId == request.auth.uid;
+      
+      // Allowing updates for two scenarios: Author editing OR someone leaving a reaction/comment increment
+      allow update: if isSignedIn() && (
+        resource.data.authorId == request.auth.uid || 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reactions', 'commentCount'])
+      );
+      
+      // 3. Comments Subcollection
+      match /comments/{commentId} {
+        allow read: if isSignedIn();
+        allow create: if isSignedIn() && request.resource.data.authorId == request.auth.uid;
+        allow update, delete: if isSignedIn() && resource.data.authorId == request.auth.uid;
+      }
+    }
+  }
+}
